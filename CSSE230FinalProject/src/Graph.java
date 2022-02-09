@@ -7,12 +7,16 @@ import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+
 public class Graph<String>{
 	Map<String, Integer> keyToIndex;
 	List<String> indexToKey;
 	double[][] matrix;
-	
 	int numEdges;
+	
+	//These are our conversion factors for the values in our text file:  
+	double distanceConversionFactor = 5; //1cm = 5km
+	double travelSpeed = 6.44; //walking speed of 6.44km/hr
 	
 	public Graph(Set<String> keys) {
 		numEdges = 0;
@@ -69,4 +73,19 @@ public class Graph<String>{
 		
 		return this.matrix[fromIndex][toIndex] > 0;
 	}
+	
+	/*
+	 * Helper methods for A* algorithm and Graph
+	 */
+	public double distanceToTimeConverter(double distance) {
+		return (distance / travelSpeed) * 60; //in minutes
+	}
+	
+	public double kmConverter(double cmDistance) {
+		return cmDistance * distanceConversionFactor;
+	}
+	
+	/*
+	 * TODO: This is where we put the A* algorithm
+	 */
 }
