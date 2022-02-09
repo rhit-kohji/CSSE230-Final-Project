@@ -62,7 +62,7 @@ public class MyViewer {
 	    
 	    System.out.println(Arrays.deepToString(graph.matrix));
 	    
-	    System.out.println(graph.hasEdge("Katah Chuki", "Sheem"));
+//	    System.out.println(graph.hasEdge("Katah Chuki", "Sheem"));
 	
 		JFrame frame = new JFrame();
 
