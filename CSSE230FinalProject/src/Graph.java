@@ -1,28 +1,72 @@
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class Graph<T extends GraphNode>{
+public class Graph<String>{
+	Map<String, Integer> keyToIndex;
+	List<String> indexToKey;
+	double[][] matrix;
 	
-	private Set<T> nodes;
-	private Map<String, Set<String>> edges;
+	int numEdges;
 	
-	public Graph(Set<T> nodes, Map<String, Set<String>> edges) {
-		this.nodes = nodes;
-		this.edges = edges;
+	public Graph(Set<String> keys) {
+		numEdges = 0;
+		int size = keys.size();
+		this.keyToIndex = new HashMap<String, Integer>();
+		this.indexToKey = new ArrayList<String>(size);
+		this.matrix = new double[size][size];
+		
+		int i = 0;
+		for (String key : keys) {
+			this.keyToIndex.put(key, i);
+			this.indexToKey.add(key);
+			i++;
+		}
 	}
+	
+	public int size() {
+		return this.indexToKey.size();
+	}
+	
+	public int numEdges() {
+		return numEdges;
+	}
+	
+	public boolean addEdge(String from, String to, double distance) throws NoSuchElementException {
+		if (!this.keyToIndex.containsKey(to) || !this.keyToIndex.containsKey(from)) {
+			throw new NoSuchElementException();
+		}
+		
+		int fromIndex = this.keyToIndex.get(from);
+		int toIndex = this.keyToIndex.get(to);
+		
+		if (this.matrix[fromIndex][toIndex] != 0) {
+			return false;
+		}
+		
+		this.matrix[fromIndex][toIndex] = distance;
 
-	public T getNode(String id) {
-		return nodes.stream()
-				.filter(node -> node.getID().equals(id))
-	            .findFirst()
-	            .orElseThrow(() -> new IllegalArgumentException("No node found with ID"));
+		this.numEdges++;
+		return true;
 	}
 	
-	public Set<T> getEdges(T node) {
-		return edges.get(node.getID()).stream()
-	            .map(this::getNode)
-	            .collect(Collectors.toSet());
+	public boolean hasVertex(String key) {
+		return this.keyToIndex.containsKey(key);
+	}
+	
+	public boolean hasEdge(String from, String to) throws NoSuchElementException {
+		if (!this.keyToIndex.containsKey(to) || !this.keyToIndex.containsKey(from)) {
+			throw new NoSuchElementException();
+		}
+		
+		int fromIndex = this.keyToIndex.get(from);
+		int toIndex = this.keyToIndex.get(to);
+		
+		return this.matrix[fromIndex][toIndex] > 0;
 	}
 }
