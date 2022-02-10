@@ -15,7 +15,7 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 
 public class MyViewer {
-	static Dimension SCENE_VIEWER = new Dimension(750, 600);
+	static Dimension SCENE_VIEWER = new Dimension(992, 509);
 	public static void main(String[] args) {
 	    Graph<String> graph;
 
@@ -66,7 +66,7 @@ public class MyViewer {
 	
 		JFrame frame = new JFrame();
 
-		frame.setSize(SCENE_VIEWER);
+		frame.setPreferredSize(SCENE_VIEWER);
 		frame.setTitle("230 Final Project");
 
 		frame.add(new MyComponent());
@@ -85,10 +85,10 @@ public class MyViewer {
         JRadioButton timeButton = new JRadioButton("Time");
 		JRadioButton distButton = new JRadioButton("Distance");
 		
-        JPanel radioPanel = new JPanel(new GridLayout(0, 1));
-	    radioPanel.add(timeButton);
-	    radioPanel.add(distButton);
-	    frame.add(radioPanel, BorderLayout.LINE_START);
+//        JPanel radioPanel = new JPanel(new GridLayout(0, 1));
+//	    radioPanel.add(timeButton);
+//	    radioPanel.add(distButton);
+//	    frame.add(radioPanel, BorderLayout.LINE_START);
 		
  
         //Display the window.

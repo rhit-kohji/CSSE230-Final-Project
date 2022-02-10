@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 public class Graph<String>{
 	Map<String, Integer> keyToIndex;
 	List<String> indexToKey;
-	double[][] matrix;
+	double[][] matrix; //Stores costs for each connection between nodes
 	int numEdges;
 	
 	//These are our conversion factors for the values in our text file:  
@@ -72,6 +72,46 @@ public class Graph<String>{
 		int toIndex = this.keyToIndex.get(to);
 		
 		return this.matrix[fromIndex][toIndex] > 0;
+	}
+	
+	private class Vertex { //Used to locate nodes we want
+		private String name;
+		private ArrayList<String> neighbours;
+		private int posX;
+		private int posY;
+		
+		public Vertex(String name, int posX, int posY) {
+			this.name = name;
+			this.neighbours = this.createNeighbourList();
+			this.posX = posX;
+			this.posY = posY;
+		}
+		
+		private ArrayList<String> createNeighbourList() {
+			ArrayList<String> list = new ArrayList<>();
+			for(int i=0; i<indexToKey.size(); i++) {
+				if( hasEdge(this.name, indexToKey.get(i)) ) {
+					this.neighbours.add(indexToKey.get(i));
+				}
+			}
+			return list;
+		}
+
+		public String getName() {
+			return this.name;
+		}
+		
+		public ArrayList<String> getNeighbours() {
+			return this.neighbours;
+		}
+		
+		public int getPosX() { 
+			return this.posX;
+		}
+		
+		public int getPosY() {
+			return this.posY;
+		}
 	}
 	
 	/*
