@@ -1,0 +1,30 @@
+Katah Chuki
+Noya Neha
+Akh Va'quot
+Bareeda Naag
+Kah Okeo
+Sha Warvo
+Tena Ko'sah
+Voo Lota
+Maag No'rah
+Mijah Rokee, 0, 0
+Mogg Latan, 1, 1
+Shae Loya, 2, 2
+Sheem Dagoze, 3, 3
+Toh Yahsa, 4, 4
+Zalta Wa, 5, 5
+Monya Toma, 6, 6
+Rona Kachta, 7, 7
+Dunba Taag, 8, 8
+Gee Ha'rah, 9, 9
+Goma Asaagh, 10, 10
+Hia Miu, 11, 11
+Lanno Kooh, 12, 12
+Maka Rah, 13, 13
+Mozo Shenno, 14, 14
+Qaza Toki, 15, 15
+Rin Oyaa, 16, 16
+Rok Uwog, 17, 17
+Sha Gemma, 18, 18
+Shada Naw, 19, 19
+To Quomo, 20, 20

@@ -59,6 +59,10 @@ public class Graph<String>{
 		return true;
 	}
 	
+//	public Vertex getVertex(String name) { //TODO: finish this
+//		
+//	}
+	
 	public boolean hasVertex(String key) {
 		return this.keyToIndex.containsKey(key);
 	}
@@ -73,6 +77,22 @@ public class Graph<String>{
 		
 		return this.matrix[fromIndex][toIndex] > 0;
 	}
+	
+	public double computeTimeCost(String from, String to) throws NoSuchElementException {
+		if(!hasEdge(from, to)) throw new NoSuchElementException();
+		int fromIndex = this.keyToIndex.get(from);
+		int toIndex = this.keyToIndex.get(to);
+		
+		return distanceToTimeConverter(this.matrix[fromIndex][toIndex]);
+	}
+	
+	public double computeDistanceCost(String from, String to) throws NoSuchElementException {
+		if(!hasEdge(from, to)) throw new NoSuchElementException();
+		int fromIndex = this.keyToIndex.get(from);
+		int toIndex = this.keyToIndex.get(to);
+		
+		return this.matrix[fromIndex][toIndex] * distanceConversionFactor;
+	} 
 	
 	private class Vertex { //Used to locate nodes we want
 		private String name;
@@ -119,10 +139,6 @@ public class Graph<String>{
 	 */
 	public double distanceToTimeConverter(double distance) {
 		return (distance / travelSpeed) * 60; //in minutes
-	}
-	
-	public double kmConverter(double cmDistance) {
-		return cmDistance * distanceConversionFactor;
 	}
 	
 	/*
