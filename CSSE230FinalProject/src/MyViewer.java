@@ -8,6 +8,8 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Scanner;
 import java.util.Set;
+
+import javax.swing.BoxLayout;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
@@ -15,7 +17,7 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 
 public class MyViewer {
-	static Dimension SCENE_VIEWER = new Dimension(992, 509);
+	static Dimension SCENE_VIEWER = new Dimension(1300, 808);
 	public static void main(String[] args) {
 	    Graph<String> graph;
 
@@ -109,18 +111,41 @@ public class MyViewer {
 		frame.add(new MyComponent());
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setVisible(true);
-		
-		String[] startingLocation = {"Start"};
-        JComboBox<String> startDropDown = new JComboBox<>(startingLocation);
-        frame.add(startDropDown);
+	
         
 //	        String[] endingLocation = {"End"};
 //	        JComboBox<String> endDropDown = new JComboBox<>(endingLocation);
 //	        frame.add(endDropDown);
         
         
-        JRadioButton timeButton = new JRadioButton("Time");
-		JRadioButton distButton = new JRadioButton("Distance");
+        JRadioButton timeButton = new JRadioButton("Distance");
+		String[] distLocation = {"Distance"};
+        JComboBox<String> distDropDown = new JComboBox<>(distLocation);
+    
+		JRadioButton distButton = new JRadioButton("Time");
+		String[] timeLocation = {"Time"};
+        JComboBox<String> timeDropDown = new JComboBox<>(timeLocation);
+        
+		String[] startingLocation = {"Start"};
+        JComboBox<String> startDropDown = new JComboBox<>(startingLocation); 
+		
+		String[] endingLocation = {"End"};
+	    JComboBox<String> endDropDown = new JComboBox<>(endingLocation);  
+	    
+	    frame.add(new MyComponent(),BorderLayout.CENTER);
+		
+		
+		JPanel buttonPanel = new JPanel();
+		//Set up the panel to use a vertical layout and give it a background color
+		buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.PAGE_AXIS));
+		buttonPanel.add(timeButton);
+		buttonPanel.add(distButton);
+		buttonPanel.add(startDropDown);
+		buttonPanel.add(endDropDown);
+		buttonPanel.add(timeDropDown);
+		buttonPanel.add(distDropDown);
+		
+		frame.add(buttonPanel,BorderLayout.EAST);
 		
 //        JPanel radioPanel = new JPanel(new GridLayout(0, 1));
 //	    radioPanel.add(timeButton);
