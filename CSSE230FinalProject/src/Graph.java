@@ -4,6 +4,8 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.PriorityQueue;
+import java.util.Queue;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -33,6 +35,43 @@ public class Graph<String>{
 			this.indexToKey.add(key);
 			i++;
 		}
+	}
+	
+	/*
+	 * Helper methods for A* algorithm and Graph
+	 */
+	public double distanceToTimeConverter(double distance) {
+		return (distance / travelSpeed) * 60; //in minutes
+	}
+	
+	/*
+	 * TODO: This is where we put the A* algorithm
+	 */
+	public ArrayList<Vertex> findRoute(String from, String to) {
+		if (!this.keyToIndex.containsKey(to) || !this.keyToIndex.containsKey(from)) {
+			throw new NoSuchElementException();
+		}
+		Queue<Vertex> unvisitedVertices = new PriorityQueue<>();
+		Map<String, Vertex> allVertices = new HashMap<>();
+		
+		Vertex start = this.getVertex(from);
+		start.hCost = this.computeHCost(from, to);
+		start.gCost = 0;
+		unvisitedVertices.add(start); //TODO: iffy part right here
+		allVertices.put(from, start);
+		
+		while( !unvisitedVertices.isEmpty() ) {
+			Vertex next = unvisitedVertices.poll();
+			if (next.name.equals(to)) { //TODO: iffy part right here
+				List<Vertex> path = new ArrayList<>();
+				Vertex current = next;
+		       do {
+		            path.add(0, current);
+		            current = allVertices.get(current.getParent()); //always puts current at start of list, since going backwards
+		        } while (current != null);
+			}
+		} //TODO: stopped here
+		
 	}
 	
 	public int size() {
@@ -101,17 +140,30 @@ public class Graph<String>{
 		return this.matrix[fromIndex][toIndex] * distanceConversionFactor;
 	} 
 	
+	public double computeHCost(String from, String to) {
+		Vertex fromVertex = this.getVertex(from);
+		Vertex toVertex = this.getVertex(to);
+		double hCost = Math.sqrt(Math.pow((toVertex.posX - fromVertex.posX), 2) + Math.pow((toVertex.posY - fromVertex.posY), 2));
+		return hCost;
+	}
+	
 	public class Vertex implements Comparable<Vertex> { //Used to locate nodes we want
 		private String name;
+		private Vertex parent;
 		private ArrayList<Vertex> neighbours;
 		private int posX;
 		private int posY;
+		private double hCost; //TODO: check this later
+		private double gCost;
 		
 		public Vertex(String name, int posX, int posY) {
 			this.name = name;
+			this.parent = null;
 			this.neighbours = new ArrayList<>();
 			this.posX = posX;
 			this.posY = posY;
+			this.hCost = 0;
+			this.gCost = 0;
 		}
 		
 		public void createNeighbourList() {
@@ -122,6 +174,24 @@ public class Graph<String>{
 					this.neighbours.add(vertices.get(i));
 				}
 			}
+		}
+		
+		public ArrayList<Vertex> backTrace(Vertex start) { //TODO: check this later after implementing priority queue
+			ArrayList<Vertex> path = new ArrayList<>();
+			Vertex current = this;
+//			while(current != start) {
+//				path.add(current);
+//				current = current.getParent();
+//			}
+			return path;
+		}
+		
+		public Vertex getParent() {
+			return this.parent;
+		}
+		
+		public void setParent(Vertex parent) {
+			this.parent = parent;
 		}
 
 		public String getName() {
@@ -139,6 +209,10 @@ public class Graph<String>{
 		public int getPosY() {
 			return this.posY;
 		}
+		
+		public double getFCost() { //returns the total path cost
+			return this.gCost + this.hCost;
+		}
 
 		@Override
 		public int compareTo(Graph<String>.Vertex vertex) { //TODO: finish this
@@ -148,14 +222,4 @@ public class Graph<String>{
 		}
 	}
 	
-	/*
-	 * Helper methods for A* algorithm and Graph
-	 */
-	public double distanceToTimeConverter(double distance) {
-		return (distance / travelSpeed) * 60; //in minutes
-	}
-	
-	/*
-	 * TODO: This is where we put the A* algorithm
-	 */
 }
