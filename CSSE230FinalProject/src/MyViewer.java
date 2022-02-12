@@ -10,6 +10,7 @@ import java.util.Scanner;
 import java.util.Set;
 
 import javax.swing.BoxLayout;
+import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
@@ -17,7 +18,7 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 
 public class MyViewer {
-	static Dimension SCENE_VIEWER = new Dimension(1300, 808);
+	static Dimension SCENE_VIEWER = new Dimension(1100, 630);
 	public static void main(String[] args) {
 	    Graph<String> graph;
 
@@ -111,30 +112,29 @@ public class MyViewer {
 		frame.add(new MyComponent());
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setVisible(true);
-	
-        
-//	        String[] endingLocation = {"End"};
-//	        JComboBox<String> endDropDown = new JComboBox<>(endingLocation);
-//	        frame.add(endDropDown);
-        
-        
+      
         JRadioButton timeButton = new JRadioButton("Distance");
-		String[] distLocation = {"Distance"};
+		String[] distLocation = {"Distance in KM","5", "10", "20", "30", "40", "50"};
         JComboBox<String> distDropDown = new JComboBox<>(distLocation);
     
 		JRadioButton distButton = new JRadioButton("Time");
-		String[] timeLocation = {"Time"};
+		String[] timeLocation = {"Time","1 hour","2 hour","3 hour","4 hour","5 hour",};
         JComboBox<String> timeDropDown = new JComboBox<>(timeLocation);
         
-		String[] startingLocation = {"Start"};
+		String[] startingLocation = {"Start","Katah Chuki", "Noya Neha", "Akh Va'quot", "Bareeda Naag", "Sha Warvo", "Tena Ko'sah","Voo Lota", "Maag No'rah", "Mijah Rokee", "Mogg Latan", "Shae Loya", 
+				"Sheem Dagoze","Toh Yahsa", "Zalta Wa", "Monya Toma", "Rona Kachta", "Dunba Taag", "Gee Ha'rah","Goma Asaagh", "Hia Miu", "Lanno Kooh", "Maka Rah",
+				"Mozo Shenno", "Qaza Toki", "Rin Oyaa", "Rok Uwog", "Sha Gemma", "Shada Naw", "To Quomo"};
         JComboBox<String> startDropDown = new JComboBox<>(startingLocation); 
 		
-		String[] endingLocation = {"End"};
-	    JComboBox<String> endDropDown = new JComboBox<>(endingLocation);  
+		String[] endingLocation = {"End","Katah Chuki", "Noya Neha", "Akh Va'quot", "Bareeda Naag", "Sha Warvo", "Tena Ko'sah","Voo Lota", "Maag No'rah", "Mijah Rokee", "Mogg Latan", "Shae Loya", 
+				"Sheem Dagoze","Toh Yahsa", "Zalta Wa", "Monya Toma", "Rona Kachta", "Dunba Taag", "Gee Ha'rah","Goma Asaagh", "Hia Miu", "Lanno Kooh", "Maka Rah",
+				"Mozo Shenno", "Qaza Toki", "Rin Oyaa", "Rok Uwog", "Sha Gemma", "Shada Naw", "To Quomo"};
+	    JComboBox<String> endDropDown = new JComboBox<>(endingLocation);
+	    
+	    JButton enter =new JButton("Enter");
 	    
 	    frame.add(new MyComponent(),BorderLayout.CENTER);
-		
-		
+
 		JPanel buttonPanel = new JPanel();
 		//Set up the panel to use a vertical layout and give it a background color
 		buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.PAGE_AXIS));
@@ -144,15 +144,10 @@ public class MyViewer {
 		buttonPanel.add(endDropDown);
 		buttonPanel.add(timeDropDown);
 		buttonPanel.add(distDropDown);
-		
+		buttonPanel.add(enter);
+			
 		frame.add(buttonPanel,BorderLayout.EAST);
 		
-//        JPanel radioPanel = new JPanel(new GridLayout(0, 1));
-//	    radioPanel.add(timeButton);
-//	    radioPanel.add(distButton);
-//	    frame.add(radioPanel, BorderLayout.LINE_START);
-		
- 
         //Display the window.
         frame.pack();
         frame.setVisible(true);
