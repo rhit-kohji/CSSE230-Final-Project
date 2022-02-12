@@ -3,11 +3,11 @@ import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Scanner;
 import java.util.Set;
-
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
@@ -20,7 +20,7 @@ public class MyViewer {
 	    Graph<String> graph;
 
 	    try {
-	    	Set<String> keys = new HashSet<String>();
+	    	ArrayList<String> keys = new ArrayList<>();
 	    	File file = new File("../Nodes CSSE230 final.txt");
 	        Scanner sc = new Scanner(file);
 
@@ -60,9 +60,46 @@ public class MyViewer {
 	        return;
 	    }
 	    
-	    System.out.println(Arrays.deepToString(graph.matrix));
+	    try {
+	    	File file = new File("../Vertex Positions.txt");
+
+	        Scanner sc = new Scanner(file);
+
+	        while (sc.hasNextLine()) {
+	            String line = sc.nextLine();
+	            String[] split = line.split(", ");
+	            
+	            String name = split[0];
+	            int posX = Integer.parseInt(split[1]);
+	            int posY = Integer.parseInt(split[2]);
+	            
+	            graph.addVertex(name, posX, posY);
+	        }
+	        sc.close();
+	    } 
+	    catch (FileNotFoundException e) {
+	        e.printStackTrace();
+	        return;
+	    }
 	    
-//	    System.out.println(graph.hasEdge("Katah Chuki", "Sheem"));
+	    for(int i=0; i<graph.vertices.size(); i++) {
+	    	graph.vertices.get(i).createNeighbourList();
+	    }
+	    
+//	    for(int i=0; i<graph.vertices.size(); i++) { //Checks for neighbours
+//	    	System.out.println(graph.vertices.get(i).getName());
+//	    	System.out.print("neighbours: ");
+//	    	for(int j=0; j<graph.vertices.get(i).getNeighbours().size(); j++) {
+//	    		System.out.print(graph.vertices.get(i).getNeighbours().get(j).getName() + " ");
+//	    	}
+//	    	System.out.println();
+//	    }
+	    
+//	    System.out.println();
+//	    System.out.println(Arrays.deepToString(graph.matrix)); //Checks state of matrix
+	    
+//	    System.out.println(graph.hasEdge("Katah Chuki", "Shae Loya")); //Checks hasEdge
+//	    System.out.println(graph.hasEdge("Katah Chuki", "Sheem Dagoze"));
 	
 		JFrame frame = new JFrame();
 

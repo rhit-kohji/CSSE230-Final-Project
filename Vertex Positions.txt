@@ -1,12 +1,12 @@
-Katah Chuki
-Noya Neha
-Akh Va'quot
-Bareeda Naag
-Kah Okeo
-Sha Warvo
-Tena Ko'sah
-Voo Lota
-Maag No'rah
+Katah Chuki, 21, 21
+Noya Neha, 22, 22
+Akh Va'quot, 23, 23
+Bareeda Naag, 24, 24
+Kah Okeo, 25, 25
+Sha Warvo, 26, 26
+Tena Ko'sah, 27, 27
+Voo Lota, 28, 28
+Maag No'rah, 29, 29
 Mijah Rokee, 0, 0
 Mogg Latan, 1, 1
 Shae Loya, 2, 2

@@ -1,4 +1,4 @@
-public class RouteFinder {
+public class RouteFinder<> {
     private Graph<String> graph;
     private Scorer<Integer> nextNodeScorer;
     private Scorer<Integer> targetScorer;

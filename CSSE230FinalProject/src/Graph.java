@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 
 
 public class Graph<String>{
+	ArrayList<Vertex> vertices;
 	Map<String, Integer> keyToIndex;
 	List<String> indexToKey;
 	double[][] matrix; //Stores costs for each connection between nodes
@@ -18,12 +19,13 @@ public class Graph<String>{
 	double distanceConversionFactor = 5; //1cm = 5km
 	double travelSpeed = 6.44; //walking speed of 6.44km/hr
 	
-	public Graph(Set<String> keys) {
+	public Graph(ArrayList<String> keys) {
 		numEdges = 0;
 		int size = keys.size();
 		this.keyToIndex = new HashMap<String, Integer>();
 		this.indexToKey = new ArrayList<String>(size);
 		this.matrix = new double[size][size];
+		this.vertices = new ArrayList<>();
 		
 		int i = 0;
 		for (String key : keys) {
@@ -59,12 +61,17 @@ public class Graph<String>{
 		return true;
 	}
 	
-//	public Vertex getVertex(String name) { //TODO: finish this
-//		
-//	}
+	public Vertex getVertex(String name) {
+		return this.vertices.get(this.vertices.indexOf(name));
+	}
 	
 	public boolean hasVertex(String key) {
 		return this.keyToIndex.containsKey(key);
+	}
+	
+	public void addVertex(String name, int x, int y) {
+		Vertex temp = new Vertex(name, x, y);
+		this.vertices.add(temp);
 	}
 	
 	public boolean hasEdge(String from, String to) throws NoSuchElementException {
@@ -94,34 +101,34 @@ public class Graph<String>{
 		return this.matrix[fromIndex][toIndex] * distanceConversionFactor;
 	} 
 	
-	private class Vertex { //Used to locate nodes we want
+	public class Vertex implements Comparable<Vertex> { //Used to locate nodes we want
 		private String name;
-		private ArrayList<String> neighbours;
+		private ArrayList<Vertex> neighbours;
 		private int posX;
 		private int posY;
 		
 		public Vertex(String name, int posX, int posY) {
 			this.name = name;
-			this.neighbours = this.createNeighbourList();
+			this.neighbours = new ArrayList<>();
 			this.posX = posX;
 			this.posY = posY;
 		}
 		
-		private ArrayList<String> createNeighbourList() {
-			ArrayList<String> list = new ArrayList<>();
+		public void createNeighbourList() {
+			ArrayList<Vertex> list = new ArrayList<>();
 			for(int i=0; i<indexToKey.size(); i++) {
 				if( hasEdge(this.name, indexToKey.get(i)) ) {
-					this.neighbours.add(indexToKey.get(i));
+//					System.out.println(this.name + " " + vertices.get(i).getName());
+					this.neighbours.add(vertices.get(i));
 				}
 			}
-			return list;
 		}
 
 		public String getName() {
 			return this.name;
 		}
 		
-		public ArrayList<String> getNeighbours() {
+		public ArrayList<Vertex> getNeighbours() {
 			return this.neighbours;
 		}
 		
@@ -131,6 +138,13 @@ public class Graph<String>{
 		
 		public int getPosY() {
 			return this.posY;
+		}
+
+		@Override
+		public int compareTo(Graph<String>.Vertex vertex) { //TODO: finish this
+			//have variable called heuristic, compares heuristics when going to a new node?
+			//do calculations for which ones are more optimal
+			return 0;
 		}
 	}
 	
