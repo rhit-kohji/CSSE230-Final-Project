@@ -5,7 +5,11 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
+import java.util.PriorityQueue;
+import java.util.Queue;
 import java.util.Scanner;
 import java.util.Set;
 
@@ -88,6 +92,10 @@ public class MyViewer {
 	    for(int i=0; i<graph.vertices.size(); i++) {
 	    	graph.vertices.get(i).createNeighbourList();
 	    }
+	    
+//	    System.out.println(graph.getVertex("Hia Miu").toString());
+	    ArrayList<Graph<String>.Vertex> route = graph.findRoute("Hia Miu", "Goma Asaagh");
+	    System.out.println(route);
 	    
 //	    for(int i=0; i<graph.vertices.size(); i++) { //Checks for neighbours
 //	    	System.out.println(graph.vertices.get(i).getName());

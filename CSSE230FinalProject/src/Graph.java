@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
@@ -51,27 +52,60 @@ public class Graph<String>{
 		if (!this.keyToIndex.containsKey(to) || !this.keyToIndex.containsKey(from)) {
 			throw new NoSuchElementException();
 		}
-		Queue<Vertex> unvisitedVertices = new PriorityQueue<>();
-		Map<String, Vertex> allVertices = new HashMap<>();
+		Queue<Vertex> openSet = new PriorityQueue<>(); //vertices to be evaluated
+		Map<String, Vertex> closedSet = new HashMap<>(); //vertices that have been evaluated
 		
+		ArrayList<Vertex> finalPath = new ArrayList<>();
 		Vertex start = this.getVertex(from);
+		Vertex target = this.getVertex(to);
 		start.hCost = this.computeHCost(from, to);
 		start.gCost = 0;
-		unvisitedVertices.add(start); //TODO: iffy part right here
-		allVertices.put(from, start);
+		openSet.add(start); //TODO: iffy part right here
+		closedSet.put(from, start); 
 		
-		while( !unvisitedVertices.isEmpty() ) {
-			Vertex next = unvisitedVertices.poll();
-			if (next.name.equals(to)) { //TODO: iffy part right here
-				List<Vertex> path = new ArrayList<>();
-				Vertex current = next;
-		       do {
-		            path.add(0, current);
-		            current = allVertices.get(current.getParent()); //always puts current at start of list, since going backwards
-		        } while (current != null);
+		while( !openSet.isEmpty() ) {
+			Vertex current = openSet.poll();
+			if (current.name.equals(to)) { //TODO: iffy part right here
+				finalPath = this.backTrace(start, target);
 			}
-		} //TODO: stopped here
+			
+			//TODO: this is where we do our calculations for gCost and hCost for the neighbours, and add neighbours to the priority queue
+			//in our compareTo function, we take sum of gCost and hCost of our different paths to our neighbours and take the one that is less
+			
+			for(Vertex neighbour : current.getNeighbours()) { //TODO: iffy
+				if( closedSet.containsKey(neighbour.name) ) { //vertex already evaluated
+					continue; //skip to next neighbour
+				}
+				
+				if(current.getParent() != null) {
+					current.gCost = this.computeDistanceCost(current.getParent().name, current.name); //set parent					
+				}
+				double newMovementCostToNeighbour = current.gCost + this.computeDistanceCost(current.name, neighbour.name); //TODO: this could be what our pq is doing
+				neighbour.gCost = this.computeDistanceCost(current.name, neighbour.name);
+				if(newMovementCostToNeighbour < neighbour.gCost || !openSet.contains(neighbour)) {
+					neighbour.gCost = newMovementCostToNeighbour;
+					neighbour.hCost = this.computeDistanceCost(neighbour.name, to);
+					neighbour.parent = current;
+					
+					if(!openSet.contains(neighbour)) {
+						openSet.add(neighbour);
+					}
+				}
+			}
+		}
+		return finalPath;
+	}
+	
+	public ArrayList<Vertex> backTrace(Vertex start, Vertex end) {
+		ArrayList<Vertex> path = new ArrayList<>();
+		Vertex current = end;
+		while(current != start) {
+			path.add(current);
+			current = current.parent;
+		}
+		Collections.reverse(path);
 		
+		return path;
 	}
 	
 	public int size() {
@@ -101,7 +135,10 @@ public class Graph<String>{
 	}
 	
 	public Vertex getVertex(String name) {
-		return this.vertices.get(this.vertices.indexOf(name));
+		int index = this.keyToIndex.get(name);
+		return this.vertices.get(index);
+//		return this.vertices.get(this.vertices.indexOf(name));
+		
 	}
 	
 	public boolean hasVertex(String key) {
@@ -176,16 +213,6 @@ public class Graph<String>{
 			}
 		}
 		
-		public ArrayList<Vertex> backTrace(Vertex start) { //TODO: check this later after implementing priority queue
-			ArrayList<Vertex> path = new ArrayList<>();
-			Vertex current = this;
-//			while(current != start) {
-//				path.add(current);
-//				current = current.getParent();
-//			}
-			return path;
-		}
-		
 		public Vertex getParent() {
 			return this.parent;
 		}
@@ -210,8 +237,12 @@ public class Graph<String>{
 			return this.posY;
 		}
 		
-		public double getFCost() { //returns the total path cost
+		public double fCost() { //returns the total path cost
 			return this.gCost + this.hCost;
+		}
+		
+		public java.lang.String toString() {
+			return (java.lang.String) this.name;
 		}
 
 		@Override
