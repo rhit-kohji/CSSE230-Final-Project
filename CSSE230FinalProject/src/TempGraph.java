@@ -11,7 +11,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 
-public class Graph<String>{
+public class TempGraph<String>{
 	ArrayList<Vertex> vertices;
 	Map<String, Integer> keyToIndex;
 	List<String> indexToKey;
@@ -22,7 +22,7 @@ public class Graph<String>{
 	double distanceConversionFactor = 5; //1cm = 5km
 	double travelSpeed = 6.44; //walking speed of 6.44km/hr
 	
-	public Graph(ArrayList<String> keys) {
+	public TempGraph(ArrayList<String> keys) {
 		numEdges = 0;
 		int size = keys.size();
 		this.keyToIndex = new HashMap<String, Integer>();
@@ -52,40 +52,39 @@ public class Graph<String>{
 		if (!this.keyToIndex.containsKey(to) || !this.keyToIndex.containsKey(from)) {
 			throw new NoSuchElementException();
 		}
-		Queue<Vertex> openSet = new PriorityQueue<>(); //vertices to be evaluated
-		Map<String, Vertex> closedSet = new HashMap<>(); //vertices that have been evaluated
+		Queue<State> openSet = new PriorityQueue<>(); //vertices to be evaluated
+		Map<String, State> closedSet = new HashMap<>(); //vertices that have been evaluated
+		State startState = new State(); //TODO: need to set gCost to 0, hCost to 0, parent to null
 		
-		ArrayList<Vertex> finalPath = new ArrayList<>();
-		Vertex start = this.getVertex(from);
-		Vertex target = this.getVertex(to);
-		start.hCost = this.computeHCost(from, to);
-		start.gCost = 0;
-		openSet.add(start); //TODO: iffy part right here
-		closedSet.put(from, start); 
+		start.hCost = this.computeHCost(from, to); //TODO: build hCost and gCost into state constructor
+		start.gCost = 0; //combine 57, 59, 60 add vertex associated with from
+		openSet.add(start); //TODO: iffy part right here 
 		
 		while( !openSet.isEmpty() ) {
-			Vertex current = openSet.poll();
+			State current = openSet.poll();
 			if (current.name.equals(to)) { //TODO: iffy part right here
-				finalPath = this.backTrace(start, target);
+				ArrayList<Vertex> finalPath; 
+				finalPath = current.backTrace();
+				return finalPath;
 			}
 			
 			//TODO: this is where we do our calculations for gCost and hCost for the neighbours, and add neighbours to the priority queue
 			//in our compareTo function, we take sum of gCost and hCost of our different paths to our neighbours and take the one that is less
 			
-			for(Vertex neighbour : current.getNeighbours()) { //TODO: iffy
+			for(Edge neighbour : current.current.getNeighbours()) { //TODO: iffy
 				if( closedSet.containsKey(neighbour.name) ) { //vertex already evaluated
 					continue; //skip to next neighbour
 				}
-				
-				if(current.getParent() != null) {
-					current.gCost = this.computeDistanceCost(current.getParent().name, current.name); //set parent					
+				State newState = new State();
+				if(current.getParent() != null) { //TODO: should be parent.gCost + graph lookup (edge between parent and current node)
+					newState.gCost = current.gCost + this.computeDistanceCost(current.name, neighbour.name); //set parent					
 				}
-				double newMovementCostToNeighbour = current.gCost + this.computeDistanceCost(current.name, neighbour.name); //TODO: this could be what our pq is doing
-				neighbour.gCost = this.computeDistanceCost(current.name, neighbour.name);
-				if(newMovementCostToNeighbour < neighbour.gCost || !openSet.contains(neighbour)) {
-					neighbour.gCost = newMovementCostToNeighbour;
-					neighbour.hCost = this.computeDistanceCost(neighbour.name, to);
-					neighbour.parent = current;
+				//double newMovementCostToNeighbour = current.gCost + this.computeDistanceCost(current.name, neighbour.name); //TODO: this could be what our pq is doing
+				//neighbour.gCost = this.computeDistanceCost(current.name, neighbour.name);
+				//if(newMovementCostToNeighbour < neighbour.gCost || !openSet.contains(neighbour)) {
+				//	neighbour.gCost = newMovementCostToNeighbour;
+					newState.hCost = this.computeDistanceCost(neighbour.name, to);
+					newState.parent = current;
 					
 					if(!openSet.contains(neighbour)) {
 						openSet.add(neighbour);
@@ -93,7 +92,7 @@ public class Graph<String>{
 				}
 			}
 		}
-		return finalPath;
+		return null;
 	}
 	
 	public ArrayList<Vertex> backTrace(Vertex start, Vertex end) {
@@ -184,24 +183,43 @@ public class Graph<String>{
 		return hCost;
 	}
 	
-	public class Vertex implements Comparable<Vertex> { //Used to locate nodes we want
-		private String name;
+	public class State { //TODO: should help to navigate the graph 
 		private Vertex parent;
+		private Vertex current;
+		private double hCost;
+		private double gCost;
+		
+		public State(Vertex current) {
+			this(current, null, 0, 0);
+		}
+		
+		public State(Vertex current, Vertex parent, double gCost, double hCost) {
+			this.current = current;
+			this.parent = parent;
+			this.gCost = gCost;
+			this.hCost = hCost;
+		}	
+		
+		public double fCost() { //returns the total path cost
+			return this.gCost + this.hCost;
+		}
+	}
+	
+	public class Vertex implements Comparable<Vertex> { //Used to locate nodes we want, TODO: change vertex class into edge class
+		private String name;
 		private ArrayList<Vertex> neighbours;
 		private int posX;
 		private int posY;
-		private double hCost; //TODO: check this later
-		private double gCost;
 		
 		public Vertex(String name, int posX, int posY) {
 			this.name = name;
-			this.parent = null;
 			this.neighbours = new ArrayList<>();
 			this.posX = posX;
 			this.posY = posY;
-			this.hCost = 0;
-			this.gCost = 0;
 		}
+		
+		//TODO: we need a separate class for edges
+		//Edge itself will have at least 2 fields, one is vertex (one neighbour) and one is a cost 
 		
 		public void createNeighbourList() {
 			ArrayList<Vertex> list = new ArrayList<>();
@@ -237,18 +255,18 @@ public class Graph<String>{
 			return this.posY;
 		}
 		
-		public double fCost() { //returns the total path cost
-			return this.gCost + this.hCost;
-		}
-		
 		public java.lang.String toString() {
 			return (java.lang.String) this.name;
 		}
 
 		@Override
-		public int compareTo(Graph<String>.Vertex vertex) { //TODO: finish this
+		public int compareTo(TempGraph<String>.Vertex v) { //TODO: finish this
 			//have variable called heuristic, compares heuristics when going to a new node?
 			//do calculations for which ones are more optimal
+			//this is how it sorts the pq
+			//v.gCost + v.hCost
+			//return less than or equal to, etc.
+			//compare to current one
 			return 0;
 		}
 	}
