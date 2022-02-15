@@ -69,7 +69,7 @@ public class Graph<String>{
 		Vertex start = this.getVertex(from);
 		Vertex target = this.getVertex(to);
 		start.hCost = this.computeHCost(from, to);
-		openSet.add(start); //TODO: iffy part right here
+		openSet.add(start);
 		
 		while( !openSet.isEmpty() ) {
 			
@@ -77,8 +77,8 @@ public class Graph<String>{
 			if (closedSet.contains(current)) {
 				continue;
 			}
-			closedSet.add(current);
 			
+			closedSet.add(current);
 			if (current.name.equals(to)) { //TODO: iffy part right here
 				return this.backTrace(start, target);
 			}
@@ -87,7 +87,7 @@ public class Graph<String>{
 			//in our compareTo function, we take sum of gCost and hCost of our different paths to our neighbours and take the one that is less
 			
 			for(Edge neighbour : current.getNeighbours()) { //TODO: Fix this later
-				if( closedSet.contains(neighbour.otherVertex.name) ) { //vertex already evaluated
+				if( closedSet.contains(neighbour.otherVertex) ) { //vertex already evaluated
 					continue; //skip to next neighbour
 				}
 				
@@ -289,13 +289,10 @@ public class Graph<String>{
 			//-1 higher priority
 			//0 just equal
 			//1 lower priority
-			if ( this.fCost() < otherVertex.fCost() ) {
-				return -1;
-			}
-			else if (this.fCost() > otherVertex.fCost() ) {
-				return 1;
+			if (this.gCost != otherVertex.gCost) {
+				return (int)(this.gCost - otherVertex.gCost);
 			} else {
-				return 0;
+				return (int)(this.hCost - otherVertex.hCost);
 			}
 		}
 		

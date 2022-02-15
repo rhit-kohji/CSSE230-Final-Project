@@ -1,6 +1,7 @@
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridLayout;
+import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -94,8 +95,9 @@ public class MyViewer {
 	    }
 	    
 //	    System.out.println(graph.getVertex("Hia Miu").toString());
-//	    ArrayList<Graph<String>.Vertex> route = graph.findRoute("Hia Miu", "Goma Asaagh");
-	    ArrayList<Graph<String>.Vertex> route = graph.findRoute("Hia Miu", "Gee Ha'rah");
+	    ArrayList<Graph<String>.Vertex> route = graph.findRoute("Hia Miu", "Katah Chuki");
+	    
+//	    ArrayList<Graph<String>.Vertex> route = graph.findRoute("Hia Miu", "Shada Naw");
 	    System.out.println(route);
 	    
 //	    for(int i=0; i<graph.vertices.size(); i++) { //Checks for neighbours
@@ -142,8 +144,11 @@ public class MyViewer {
 	    
 	    JButton enter =new JButton("Enter");
 	    
-	    frame.add(new MyComponent(),BorderLayout.CENTER);
-
+	    MyComponent component = new MyComponent();
+	    frame.add(component,BorderLayout.CENTER);
+	    
+	    frame.getContentPane().addMouseListener(new mouseClickListener());
+	    
 		JPanel buttonPanel = new JPanel();
 		//Set up the panel to use a vertical layout and give it a background color
 		buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.PAGE_AXIS));
