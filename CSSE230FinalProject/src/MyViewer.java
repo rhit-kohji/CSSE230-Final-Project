@@ -89,19 +89,20 @@ public class MyViewer {
 	        return;
 	    }
 	    
-	    for(int i=0; i<graph.vertices.size(); i++) {
+	    for(int i=0; i<graph.vertices.size(); i++) { //DO NOT DELETE this is where we create our neighbour list for each node
 	    	graph.vertices.get(i).createNeighbourList();
 	    }
 	    
 //	    System.out.println(graph.getVertex("Hia Miu").toString());
-	    ArrayList<Graph<String>.Vertex> route = graph.findRoute("Hia Miu", "Goma Asaagh");
+//	    ArrayList<Graph<String>.Vertex> route = graph.findRoute("Hia Miu", "Goma Asaagh");
+	    ArrayList<Graph<String>.Vertex> route = graph.findRoute("Hia Miu", "Gee Ha'rah");
 	    System.out.println(route);
 	    
 //	    for(int i=0; i<graph.vertices.size(); i++) { //Checks for neighbours
 //	    	System.out.println(graph.vertices.get(i).getName());
 //	    	System.out.print("neighbours: ");
 //	    	for(int j=0; j<graph.vertices.get(i).getNeighbours().size(); j++) {
-//	    		System.out.print(graph.vertices.get(i).getNeighbours().get(j).getName() + " ");
+//	    		System.out.print(graph.vertices.get(i).getNeighbours().get(j).cost + " ");
 //	    	}
 //	    	System.out.println();
 //	    }

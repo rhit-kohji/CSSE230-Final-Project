@@ -1,6 +1,8 @@
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
@@ -45,6 +47,14 @@ public class Graph<String>{
 		return (distance / travelSpeed) * 60; //in minutes
 	}
 	
+	//TODO: check this, Reset function for our findRoute
+	public void reset() {
+		for(int i=0; i<this.vertices.size(); i++) {
+			this.vertices.get(i).gCost = 0;
+			this.vertices.get(i).hCost = 0;
+		}
+	}
+	
 	/*
 	 * TODO: This is where we put the A* algorithm
 	 */
@@ -52,54 +62,58 @@ public class Graph<String>{
 		if (!this.keyToIndex.containsKey(to) || !this.keyToIndex.containsKey(from)) {
 			throw new NoSuchElementException();
 		}
-		Queue<Vertex> openSet = new PriorityQueue<>(); //vertices to be evaluated
-		Map<String, Vertex> closedSet = new HashMap<>(); //vertices that have been evaluated
+		this.reset();
+		Queue<Vertex> openSet = new PriorityQueue<>(); //vertices to be evaluated, it needs to store edges
+		Set<Vertex> closedSet = new HashSet<>(); //vertices that have been evaluated
 		
-		ArrayList<Vertex> finalPath = new ArrayList<>();
 		Vertex start = this.getVertex(from);
 		Vertex target = this.getVertex(to);
 		start.hCost = this.computeHCost(from, to);
-		start.gCost = 0;
 		openSet.add(start); //TODO: iffy part right here
-		closedSet.put(from, start); 
 		
 		while( !openSet.isEmpty() ) {
+			
 			Vertex current = openSet.poll();
+			if (closedSet.contains(current)) {
+				continue;
+			}
+			closedSet.add(current);
+			
 			if (current.name.equals(to)) { //TODO: iffy part right here
-				finalPath = this.backTrace(start, target);
+				return this.backTrace(start, target);
 			}
 			
 			//TODO: this is where we do our calculations for gCost and hCost for the neighbours, and add neighbours to the priority queue
 			//in our compareTo function, we take sum of gCost and hCost of our different paths to our neighbours and take the one that is less
 			
-			for(Vertex neighbour : current.getNeighbours()) { //TODO: iffy
-				if( closedSet.containsKey(neighbour.name) ) { //vertex already evaluated
+			for(Edge neighbour : current.getNeighbours()) { //TODO: Fix this later
+				if( closedSet.contains(neighbour.otherVertex.name) ) { //vertex already evaluated
 					continue; //skip to next neighbour
 				}
 				
-				if(current.getParent() != null) {
-					current.gCost = this.computeDistanceCost(current.getParent().name, current.name); //set parent					
-				}
-				double newMovementCostToNeighbour = current.gCost + this.computeDistanceCost(current.name, neighbour.name); //TODO: this could be what our pq is doing
-				neighbour.gCost = this.computeDistanceCost(current.name, neighbour.name);
-				if(newMovementCostToNeighbour < neighbour.gCost || !openSet.contains(neighbour)) {
-					neighbour.gCost = newMovementCostToNeighbour;
-					neighbour.hCost = this.computeDistanceCost(neighbour.name, to);
-					neighbour.parent = current;
+//				if(current.getParent() != null) { //TODO: not sure if we need to set gCost
+//					current.gCost = 					
+//				}
+				double newMovementCostToNeighbour = current.gCost + neighbour.cost;
+				if(newMovementCostToNeighbour < neighbour.otherVertex.gCost || !openSet.contains(neighbour.otherVertex)) { //if new path to neighbour is shorter than prev. best path
+					neighbour.otherVertex.gCost = newMovementCostToNeighbour; //assigning current best path
+					neighbour.otherVertex.hCost = this.computeHCost(neighbour.otherVertex.name, to);
+					neighbour.otherVertex.parent = current;
 					
-					if(!openSet.contains(neighbour)) {
-						openSet.add(neighbour);
+					if(!openSet.contains(neighbour.otherVertex)) {
+						openSet.add(neighbour.otherVertex);
 					}
 				}
 			}
 		}
-		return finalPath;
+		return null;
 	}
 	
 	public ArrayList<Vertex> backTrace(Vertex start, Vertex end) {
 		ArrayList<Vertex> path = new ArrayList<>();
 		Vertex current = end;
-		while(current != start) {
+		while(current != null) {
+			System.out.println(current.name);
 			path.add(current);
 			current = current.parent;
 		}
@@ -184,10 +198,31 @@ public class Graph<String>{
 		return hCost;
 	}
 	
+	/*
+	 *  Edge stores the generic cost, computing time and distance will be done after route is found
+	 */
+	public class Edge implements Serializable {
+		private Vertex otherVertex;
+		public double cost; //TODO: change this back to private after testing
+		
+		public Edge (Vertex otherVertex, double cost) {
+			this.otherVertex = otherVertex;
+			this.cost = cost;
+		}
+		
+		public void setEdgeCost(double cost) {
+			this.cost = cost;
+		}
+		
+		public void setOtherVertex(Vertex otherVertex) {
+			this.otherVertex = otherVertex;
+		}
+	}
+	
 	public class Vertex implements Comparable<Vertex> { //Used to locate nodes we want
 		private String name;
 		private Vertex parent;
-		private ArrayList<Vertex> neighbours;
+		private ArrayList<Edge> neighbours;
 		private int posX;
 		private int posY;
 		private double hCost; //TODO: check this later
@@ -204,11 +239,15 @@ public class Graph<String>{
 		}
 		
 		public void createNeighbourList() {
-			ArrayList<Vertex> list = new ArrayList<>();
+			ArrayList<Edge> list = new ArrayList<>();
 			for(int i=0; i<indexToKey.size(); i++) {
 				if( hasEdge(this.name, indexToKey.get(i)) ) {
 //					System.out.println(this.name + " " + vertices.get(i).getName());
-					this.neighbours.add(vertices.get(i));
+					int fromIndex = Graph.this.keyToIndex.get(this.name);
+					int toIndex = Graph.this.keyToIndex.get(indexToKey.get(i));
+					double cost = matrix[fromIndex][toIndex];
+					Edge newEdge = new Edge(Graph.this.getVertex(indexToKey.get(i)), cost);
+					this.neighbours.add(newEdge);
 				}
 			}
 		}
@@ -225,7 +264,7 @@ public class Graph<String>{
 			return this.name;
 		}
 		
-		public ArrayList<Vertex> getNeighbours() {
+		public ArrayList<Edge> getNeighbours() {
 			return this.neighbours;
 		}
 		
@@ -246,11 +285,20 @@ public class Graph<String>{
 		}
 
 		@Override
-		public int compareTo(Graph<String>.Vertex vertex) { //TODO: finish this
-			//have variable called heuristic, compares heuristics when going to a new node?
-			//do calculations for which ones are more optimal
-			return 0;
+		public int compareTo(Vertex otherVertex) { //TODO: check this
+			//-1 higher priority
+			//0 just equal
+			//1 lower priority
+			if ( this.fCost() < otherVertex.fCost() ) {
+				return -1;
+			}
+			else if (this.fCost() > otherVertex.fCost() ) {
+				return 1;
+			} else {
+				return 0;
+			}
 		}
+		
 	}
 	
 }
