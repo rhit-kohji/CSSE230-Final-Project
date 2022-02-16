@@ -65,6 +65,7 @@ public class Graph<String>{
 		
 		Vertex start = this.getVertex(from);
 		Vertex target = this.getVertex(to);
+		start.gCost = 0;
 		start.hCost = this.computeHCost(from, to);
 		openSet.add(start);
 		
@@ -93,11 +94,12 @@ public class Graph<String>{
 					neighbour.otherVertex.hCost = this.computeHCost(neighbour.otherVertex.name, to);
 					neighbour.otherVertex.parent = current;
 					
-					if(!openSet.contains(neighbour.otherVertex)) { //TODO: may want to change this to always add neighbour to openSet
-						openSet.add(neighbour.otherVertex);
-					}
+//					if(!openSet.contains(neighbour.otherVertex)) { //TODO: may want to change this to always add neighbour to openSet
+//						openSet.add(neighbour.otherVertex);
+//					}
+					openSet.add(neighbour.otherVertex);
 				}
-			}
+			}  
 		}
 		return null;
 	}
@@ -257,6 +259,7 @@ public class Graph<String>{
 		Vertex fromVertex = this.getVertex(from);
 		Vertex toVertex = this.getVertex(to);
 		double hCost = Math.sqrt(Math.pow((toVertex.posX - fromVertex.posX), 2) + Math.pow((toVertex.posY - fromVertex.posY), 2));
+//		double hCost = Math.abs(toVertex.posX - fromVertex.posX) + Math.abs(toVertex.posY - fromVertex.posY); //TODO: Another heuristic we could use 
 		return hCost;
 	}
 	
@@ -351,15 +354,22 @@ public class Graph<String>{
 		}
 
 		@Override
-		public int compareTo(Vertex otherVertex) {
+		public int compareTo(Vertex otherVertex) { //TODO: using fCost instead each cost separately
 			//-1 higher priority
 			//0 just equal
 			//1 lower priority
-			if (this.gCost != otherVertex.gCost) {
-				return (int)(this.gCost - otherVertex.gCost);
+//			if (this.gCost != otherVertex.gCost) {
+//				return (int)(this.gCost - otherVertex.gCost);
+//			} else {
+//				return (int)(this.hCost - otherVertex.hCost);
+//			}
+			
+			if ( this.fCost() != otherVertex.fCost() ) {
+				return (int)(this.fCost() - otherVertex.fCost()); 
 			} else {
-				return (int)(this.hCost - otherVertex.hCost);
+				return (int)(this.hCost - otherVertex.hCost); 
 			}
+			
 		}
 		
 	}
