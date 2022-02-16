@@ -46,8 +46,9 @@ public class Graph<String>{
 	//TODO: check this, Reset function for our findRoute
 	public void reset() {
 		for(int i=0; i<this.vertices.size(); i++) {
-			this.vertices.get(i).gCost = 0;
-			this.vertices.get(i).hCost = 0;
+			this.vertices.get(i).gCost = Double.MAX_VALUE;
+			this.vertices.get(i).hCost = Double.MAX_VALUE;
+			this.vertices.get(i).parent = null;
 		}
 	}
 	
@@ -92,6 +93,60 @@ public class Graph<String>{
 					neighbour.otherVertex.hCost = this.computeHCost(neighbour.otherVertex.name, to);
 					neighbour.otherVertex.parent = current;
 					
+					if(!openSet.contains(neighbour.otherVertex)) { //TODO: may want to change this to always add neighbour to openSet
+						openSet.add(neighbour.otherVertex);
+					}
+				}
+			}
+		}
+		return null;
+	}
+	
+	/*
+	 * This is where we put the modified A* algorithm to find route(s) by cost
+	 */
+	public ArrayList<Vertex> findRouteWithMaxCost(String from, double maxCost, boolean isTime) {
+		if (!this.keyToIndex.containsKey(from)) {
+			throw new NoSuchElementException();
+		}
+		this.reset();
+		
+		if (isTime) {
+			maxCost = maxCost * ((travelSpeed) / (60 * distanceConversionFactor));
+		}
+		else {
+			maxCost = (maxCost / distanceConversionFactor);
+		}
+		
+		Queue<Vertex> openSet = new PriorityQueue<>(); //vertices to be evaluated, it needs to store edges
+		Set<Vertex> closedSet = new HashSet<>(); //vertices that have been evaluated
+		
+		Vertex start = this.getVertex(from);
+		openSet.add(start);
+		
+		while( !openSet.isEmpty() ) {
+			
+			Vertex current = openSet.poll();
+			if (closedSet.contains(current)) {
+				continue;
+			}
+			
+			closedSet.add(current);
+//			if (current.name.equals(to)) {
+//				return this.backTrace(start, target);
+//			}
+			
+			for(Edge neighbour : current.getNeighbours()) {
+				if( closedSet.contains(neighbour.otherVertex) ) { //vertex already evaluated
+					continue; //skip to next neighbour
+				}
+				
+				double newMovementCostToNeighbour = current.gCost + neighbour.getCost();
+				if(newMovementCostToNeighbour < maxCost) { 
+					neighbour.otherVertex.gCost = newMovementCostToNeighbour; //assigning current best path
+//					neighbour.otherVertex.hCost = this.computeHCost(neighbour.otherVertex.name, to);
+					neighbour.otherVertex.parent = current;
+					
 					if(!openSet.contains(neighbour.otherVertex)) {
 						openSet.add(neighbour.otherVertex);
 					}
@@ -105,7 +160,7 @@ public class Graph<String>{
 		ArrayList<Vertex> path = new ArrayList<>();
 		Vertex current = end;
 		while(current != null) {
-//			System.out.println(current.name);
+			System.out.println(current.name);
 			path.add(current);
 			current = current.parent;
 		}
@@ -127,14 +182,16 @@ public class Graph<String>{
 	
 	public String totalRouteDCost(double totalRouteCost) {
 		double totalRouteDCost = totalRouteCost * distanceConversionFactor;
-		return (String) (totalRouteDCost + "");
+		return (String) (totalRouteDCost + " km");
 	}
 	
 	public String totalRouteTCost(double totalRouteCost) {
-//		double minutes = ( (totalRouteCost * distanceConversionFactor) / travelSpeed ) * 60; // route in minutes
+//		double totalMinutes = ( (totalRouteCost * distanceConversionFactor) / travelSpeed ) * 60; // route in minutes
 		double hours = ( (totalRouteCost * distanceConversionFactor) / travelSpeed );
-		double minutes = hours % 60;
-		return (String) ("Hours: " + hours + " Minutes: " + minutes);
+		int finalHours = (int) hours;
+		int minutes = (int) (hours * 60) % 60;
+//		return (String) ("Total Minutes: " + totalMinutes + " Hours: " + finalHours + " Minutes: " + minutes);
+		return (String) ("Hours: " + finalHours + " Minutes: " + minutes);
 	}
 	
 	public int size() {
@@ -235,7 +292,7 @@ public class Graph<String>{
 		private int posX;
 		private int posY;
 		private double hCost; //straight line estimate cost to destination
-		private double gCost; //total cost travelled from start node 
+		private double gCost; //total cost traveled from start node 
 		
 		public Vertex(String name, int posX, int posY) {
 			this.name = name;
@@ -243,8 +300,8 @@ public class Graph<String>{
 			this.neighbours = new ArrayList<>();
 			this.posX = posX;
 			this.posY = posY;
-			this.hCost = 0;
-			this.gCost = 0;
+			this.hCost = Double.MAX_VALUE;
+			this.gCost = Double.MAX_VALUE;
 		}
 		
 		public void createNeighbourList() {
