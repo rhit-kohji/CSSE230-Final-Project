@@ -26,14 +26,9 @@ import javax.swing.JRadioButton;
 
 public class MyViewer {
 	static Dimension SCENE_VIEWER = new Dimension(1100, 630);
-	private boolean end = false;
-	private boolean start = false;
-	private boolean time = false; 
-	private boolean dist = false;
-	private String startStr = ""; 
-	private String endStr = ""; 
 	public static void main(String[] args) {
 	    Graph<String> graph;
+	    MyComponent component = new MyComponent();
 
 	    try {
 	    	ArrayList<String> keys = new ArrayList<>();
@@ -139,7 +134,7 @@ public class MyViewer {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				System.out.println("Distance Added");
-				dist = true;
+				component.dist = true;
 			}});
     
 		JRadioButton distButton = new JRadioButton("Time");
@@ -149,7 +144,7 @@ public class MyViewer {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				System.out.println("Time Added");
-				time = true;
+				component.time = true;
 			}});
         
 		String[] startingLocation = {"Start","Katah Chuki", "Noya Neha", "Akh Va'quot", "Bareeda Naag", "Sha Warvo", "Tena Ko'sah","Voo Lota", "Maag No'rah", "Mijah Rokee", "Mogg Latan", "Shae Loya", 
@@ -160,8 +155,8 @@ public class MyViewer {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				System.out.println("First Location");
-				start = true;
-				startStr = startDropDown.getSelectedItem().toString();
+				component.start = true;
+				component.startStr = startDropDown.getSelectedItem().toString();
 			}});
 		
 		String[] endingLocation = {"End","Katah Chuki", "Noya Neha", "Akh Va'quot", "Bareeda Naag", "Sha Warvo", "Tena Ko'sah","Voo Lota", "Maag No'rah", "Mijah Rokee", "Mogg Latan", "Shae Loya", 
@@ -172,8 +167,8 @@ public class MyViewer {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				System.out.println("End Added");
-				MyViewer.this.end = true;
-				MyViewer.this.endStr = endDropDown.getSelectedItem().toString();
+				component.end = true;
+				component.endStr = endDropDown.getSelectedItem().toString();
 			}});
 	    
 	    JButton enter =new JButton("Enter");
@@ -182,10 +177,15 @@ public class MyViewer {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				System.out.println("Entered");
-				if(MyViewer.this.end && MyViewer.this.start) {
+				if(component.end && component.start) {
 					// calculate dist
-					graph.findRoute(MyViewer.this.startStr, MyViewer.this.endStr);
-				} else if (MyViewer.this.time && MyViewer.this.dist) {
+					ArrayList<Graph<String>.Vertex> al = graph.findRoute(component.startStr, component.endStr);
+					if(!al.isEmpty()) {
+						component.addPathLines(al);
+					}
+					System.out.print("error message");
+					
+				} else if (component.time && component.dist) {
 					// calculate dist
 				} else {
 					// update window with error message 
@@ -196,14 +196,13 @@ public class MyViewer {
 	    restart.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				MyViewer.this.start = false;
-				MyViewer.this.end = false; 
-				MyViewer.this.dist = false;
-				MyViewer.this.time = false;
+				component.start = false;
+				component.end = false; 
+				component.dist = false;
+				component.time = false;
 				//reset frame 
 				
 			}});
-	    MyComponent component = new MyComponent();
 	    frame.add(component,BorderLayout.CENTER);
 	    
 	    frame.getContentPane().addMouseListener(new mouseClickListener());

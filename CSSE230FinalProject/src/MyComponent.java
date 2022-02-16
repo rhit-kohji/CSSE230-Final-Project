@@ -16,16 +16,28 @@ import javax.swing.JRadioButton;
 
 
 public class MyComponent extends JComponent {
-	private ArrayList<Line2D.Double> pathLines = new ArrayList<Line2D.Double>();
+	public boolean end = false;
+	public boolean start = false;
+	public boolean time = false; 
+	public boolean dist = false;
+	public String startStr = ""; 
+	public String endStr = ""; 
+	public ArrayList<Line2D.Double> pathLines = new ArrayList<Line2D.Double>();
 	
-	protected void addPathLines(ArrayList<Graph.Vertex> vertices) {
-		for (int i = 0; i < vertices.size() - 1; i++) {
-			pathLines.add(new Line2D.Double(vertices.get(i).getPosX(), vertices.get(i).getPosY(), vertices.get(i + 1).getPosX(), vertices.get(i + 1).getPosY()));
+	protected void addPathLines(ArrayList<Graph.Vertex> al) {
+		for (int i = 0; i < al.size() - 1; i++) {
+			pathLines.add(new Line2D.Double(al.get(i).getPosX(), al.get(i).getPosY(), al.get(i + 1).getPosX(), al.get(i + 1).getPosY()));
 		}
 	}
 	
 	protected void clear() {
 		pathLines.clear();
+	}
+	
+	protected void whichMethod() {
+		if(end && start) {
+			
+		}
 	}
 	
 	protected void paintComponent(Graphics g) {
