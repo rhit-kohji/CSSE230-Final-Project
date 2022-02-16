@@ -24,7 +24,7 @@ public class MyComponent extends JComponent {
 	public String endStr = ""; 
 	public ArrayList<Line2D.Double> pathLines = new ArrayList<Line2D.Double>();
 	
-	protected void addPathLines(ArrayList<Graph.Vertex> al) {
+	protected void addPathLines(ArrayList<Graph<String>.Vertex> al) {
 		for (int i = 0; i < al.size() - 1; i++) {
 			pathLines.add(new Line2D.Double(al.get(i).getPosX(), al.get(i).getPosY(), al.get(i + 1).getPosX(), al.get(i + 1).getPosY()));
 		}
@@ -81,4 +81,5 @@ public class MyComponent extends JComponent {
 		}
 
 	}
+
 }
