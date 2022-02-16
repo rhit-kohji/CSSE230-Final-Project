@@ -43,10 +43,6 @@ public class Graph<String>{
 	/*
 	 * Helper methods for A* algorithm and Graph
 	 */
-	public double distanceToTimeConverter(double distance) {
-		return (distance / travelSpeed) * 60; //in minutes
-	}
-	
 	//TODO: check this, Reset function for our findRoute
 	public void reset() {
 		for(int i=0; i<this.vertices.size(); i++) {
@@ -56,7 +52,7 @@ public class Graph<String>{
 	}
 	
 	/*
-	 * TODO: This is where we put the A* algorithm
+	 * This is where we put the A* algorithm
 	 */
 	public ArrayList<Vertex> findRoute(String from, String to) {
 		if (!this.keyToIndex.containsKey(to) || !this.keyToIndex.containsKey(from)) {
@@ -79,22 +75,18 @@ public class Graph<String>{
 			}
 			
 			closedSet.add(current);
-			if (current.name.equals(to)) { //TODO: iffy part right here
+			if (current.name.equals(to)) {
 				return this.backTrace(start, target);
 			}
 			
-			//TODO: this is where we do our calculations for gCost and hCost for the neighbours, and add neighbours to the priority queue
+			//this is where we do our calculations for gCost and hCost for the neighbours, and add neighbours to the priority queue
 			//in our compareTo function, we take sum of gCost and hCost of our different paths to our neighbours and take the one that is less
-			
-			for(Edge neighbour : current.getNeighbours()) { //TODO: Fix this later
+			for(Edge neighbour : current.getNeighbours()) {
 				if( closedSet.contains(neighbour.otherVertex) ) { //vertex already evaluated
 					continue; //skip to next neighbour
 				}
 				
-//				if(current.getParent() != null) { //TODO: not sure if we need to set gCost
-//					current.gCost = 					
-//				}
-				double newMovementCostToNeighbour = current.gCost + neighbour.cost;
+				double newMovementCostToNeighbour = current.gCost + neighbour.getCost();
 				if(newMovementCostToNeighbour < neighbour.otherVertex.gCost || !openSet.contains(neighbour.otherVertex)) { //if new path to neighbour is shorter than prev. best path
 					neighbour.otherVertex.gCost = newMovementCostToNeighbour; //assigning current best path
 					neighbour.otherVertex.hCost = this.computeHCost(neighbour.otherVertex.name, to);
@@ -113,13 +105,36 @@ public class Graph<String>{
 		ArrayList<Vertex> path = new ArrayList<>();
 		Vertex current = end;
 		while(current != null) {
-			System.out.println(current.name);
+//			System.out.println(current.name);
 			path.add(current);
 			current = current.parent;
 		}
 		Collections.reverse(path);
 		
 		return path;
+	}
+	
+	public double totalRouteCost(ArrayList<Vertex> route) {
+		double total = 0;
+		for(int i=0; i<route.size()-1; i++) {
+			String from = route.get(i).name;
+			String to = route.get(i+1).name;
+			double edgeCost = this.computePlainCost(from, to);
+			total += edgeCost;
+		}
+		return total;
+	}
+	
+	public String totalRouteDCost(double totalRouteCost) {
+		double totalRouteDCost = totalRouteCost * distanceConversionFactor;
+		return totalRouteDCost + "";
+	}
+	
+	public double totalRouteTCost(double totalRouteCost) {
+//		double minutes = ( (totalRouteCost * distanceConversionFactor) / travelSpeed ) * 60; // route in minutes
+		double hours = ( (totalRouteCost * distanceConversionFactor) / travelSpeed );
+		double minutes = hours % 60;
+		return 
 	}
 	
 	public int size() {
@@ -151,8 +166,6 @@ public class Graph<String>{
 	public Vertex getVertex(String name) {
 		int index = this.keyToIndex.get(name);
 		return this.vertices.get(index);
-//		return this.vertices.get(this.vertices.indexOf(name));
-		
 	}
 	
 	public boolean hasVertex(String key) {
@@ -175,21 +188,13 @@ public class Graph<String>{
 		return this.matrix[fromIndex][toIndex] > 0;
 	}
 	
-	public double computeTimeCost(String from, String to) throws NoSuchElementException {
+	public double computePlainCost(String from, String to) throws NoSuchElementException {
 		if(!hasEdge(from, to)) throw new NoSuchElementException();
 		int fromIndex = this.keyToIndex.get(from);
 		int toIndex = this.keyToIndex.get(to);
 		
-		return distanceToTimeConverter(this.matrix[fromIndex][toIndex]);
+		return this.matrix[fromIndex][toIndex];
 	}
-	
-	public double computeDistanceCost(String from, String to) throws NoSuchElementException {
-		if(!hasEdge(from, to)) throw new NoSuchElementException();
-		int fromIndex = this.keyToIndex.get(from);
-		int toIndex = this.keyToIndex.get(to);
-		
-		return this.matrix[fromIndex][toIndex] * distanceConversionFactor;
-	} 
 	
 	public double computeHCost(String from, String to) {
 		Vertex fromVertex = this.getVertex(from);
@@ -203,7 +208,7 @@ public class Graph<String>{
 	 */
 	public class Edge implements Serializable {
 		private Vertex otherVertex;
-		public double cost; //TODO: change this back to private after testing
+		private double cost;
 		
 		public Edge (Vertex otherVertex, double cost) {
 			this.otherVertex = otherVertex;
@@ -217,6 +222,10 @@ public class Graph<String>{
 		public void setOtherVertex(Vertex otherVertex) {
 			this.otherVertex = otherVertex;
 		}
+		
+		public double getCost() {
+			return this.cost;
+		}
 	}
 	
 	public class Vertex implements Comparable<Vertex> { //Used to locate nodes we want
@@ -225,8 +234,8 @@ public class Graph<String>{
 		private ArrayList<Edge> neighbours;
 		private int posX;
 		private int posY;
-		private double hCost; //TODO: check this later
-		private double gCost;
+		private double hCost; //straight line estimate cost to destination
+		private double gCost; //total cost travelled from start node 
 		
 		public Vertex(String name, int posX, int posY) {
 			this.name = name;
@@ -285,7 +294,7 @@ public class Graph<String>{
 		}
 
 		@Override
-		public int compareTo(Vertex otherVertex) { //TODO: check this
+		public int compareTo(Vertex otherVertex) {
 			//-1 higher priority
 			//0 just equal
 			//1 lower priority
