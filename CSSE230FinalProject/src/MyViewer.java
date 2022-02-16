@@ -127,8 +127,7 @@ public class MyViewer {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setVisible(true);
       
-        JRadioButton timeButton = new JRadioButton("Distance");
-		String[] distLocation = {"Distance in KM","5", "10", "20", "30", "40", "50"};
+       	String[] distLocation = {"Distance in KM","5", "10", "20", "30", "40", "50","100","150","200"};
         JComboBox<String> distDropDown = new JComboBox<>(distLocation);
         distDropDown.addActionListener(new ActionListener() {
 			@Override
@@ -137,8 +136,7 @@ public class MyViewer {
 				component.dist = true;
 			}});
     
-		JRadioButton distButton = new JRadioButton("Time");
-		String[] timeLocation = {"Time","1 hour","2 hour","3 hour","4 hour","5 hour",};
+		String[] timeLocation = {"Time in Hours","1","2","3","4","5",};
         JComboBox<String> timeDropDown = new JComboBox<>(timeLocation);
         timeDropDown.addActionListener(new ActionListener() {
 			@Override
@@ -147,9 +145,9 @@ public class MyViewer {
 				component.time = true;
 			}});
         
-		String[] startingLocation = {"Start","Katah Chuki", "Noya Neha", "Akh Va'quot", "Bareeda Naag", "Sha Warvo", "Tena Ko'sah","Voo Lota", "Maag No'rah", "Mijah Rokee", "Mogg Latan", "Shae Loya", 
-				"Sheem Dagoze","Toh Yahsa", "Zalta Wa", "Monya Toma", "Rona Kachta", "Dunba Taag", "Gee Ha'rah","Goma Asaagh", "Hia Miu", "Lanno Kooh", "Maka Rah",
-				"Mozo Shenno", "Qaza Toki", "Rin Oyaa", "Rok Uwog", "Sha Gemma", "Shada Naw", "To Quomo"};
+		String[] startingLocation = {"Start","Akh Va'quot", "Bareeda Naag", "Dunba Taag", "Bareeda Naag", "Gee Ha'rah", "Goma Asaagh", "Hia Miu","Kah Okeo", "Katah Chuki", "Lanno Kooh", "Maag No'rah", "Maka Rah",
+				"Mijah Rokee","Mogg Latan", "Monya Toma", "Mozo Shenno", "Noya Neha", "Qaza Toki", "Rin Oyaa","Rok Uwog", "Rona Kachta", "Sha Gemma", "Sha Warvo",
+				"Shada Naw", "Shae Loya", "Sheem Dagoze", "Tena Ko'sah", "Toh Yahsa", "Voo Lota", "Zalta Wa"};
         JComboBox<String> startDropDown = new JComboBox<>(startingLocation);
         startDropDown.addActionListener(new ActionListener() {
 			@Override
@@ -159,9 +157,9 @@ public class MyViewer {
 				component.startStr = startDropDown.getSelectedItem().toString();
 			}});
 		
-		String[] endingLocation = {"End","Katah Chuki", "Noya Neha", "Akh Va'quot", "Bareeda Naag", "Sha Warvo", "Tena Ko'sah","Voo Lota", "Maag No'rah", "Mijah Rokee", "Mogg Latan", "Shae Loya", 
-				"Sheem Dagoze","Toh Yahsa", "Zalta Wa", "Monya Toma", "Rona Kachta", "Dunba Taag", "Gee Ha'rah","Goma Asaagh", "Hia Miu", "Lanno Kooh", "Maka Rah",
-				"Mozo Shenno", "Qaza Toki", "Rin Oyaa", "Rok Uwog", "Sha Gemma", "Shada Naw", "To Quomo"};
+		String[] endingLocation = {"End","Akh Va'quot", "Bareeda Naag", "Dunba Taag", "Bareeda Naag", "Gee Ha'rah", "Goma Asaagh", "Hia Miu","Kah Okeo", "Katah Chuki", "Lanno Kooh", "Maag No'rah", "Maka Rah",
+				"Mijah Rokee","Mogg Latan", "Monya Toma", "Mozo Shenno", "Noya Neha", "Qaza Toki", "Rin Oyaa","Rok Uwog", "Rona Kachta", "Sha Gemma", "Sha Warvo",
+				"Shada Naw", "Shae Loya", "Sheem Dagoze", "Tena Ko'sah", "Toh Yahsa", "Voo Lota", "Zalta Wa"};
 	    JComboBox<String> endDropDown = new JComboBox<>(endingLocation);
 	    endDropDown.addActionListener(new ActionListener() {
 			@Override
@@ -169,6 +167,17 @@ public class MyViewer {
 				System.out.println("End Added");
 				component.end = true;
 				component.endStr = endDropDown.getSelectedItem().toString();
+			}});
+	    
+	    String[] startingLocationTimeOrDist = {"Start","Akh Va'quot", "Bareeda Naag", "Dunba Taag", "Bareeda Naag", "Gee Ha'rah", "Goma Asaagh", "Hia Miu","Kah Okeo", "Katah Chuki", "Lanno Kooh", "Maag No'rah", "Maka Rah",
+	    		"Mijah Rokee","Mogg Latan", "Monya Toma", "Mozo Shenno", "Noya Neha", "Qaza Toki", "Rin Oyaa","Rok Uwog", "Rona Kachta", "Sha Gemma", "Sha Warvo",
+	    		"Shada Naw", "Shae Loya", "Sheem Dagoze", "Tena Ko'sah", "Toh Yahsa", "Voo Lota", "Zalta Wa"};
+        JComboBox<String> startDropDownTimeOrDist = new JComboBox<>(startingLocationTimeOrDist);
+        startDropDownTimeOrDist.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				System.out.println("Start Location for Time or Dist");
+				component.startStrTimeOrDist = startDropDownTimeOrDist.getSelectedItem().toString();
 			}});
 	    
 	    JButton enter =new JButton("Enter");
@@ -181,17 +190,19 @@ public class MyViewer {
 					ArrayList<Graph<String>.Vertex> al = graph.findRoute(component.startStr, component.endStr);
 					if(!al.isEmpty()) {
 						component.addPathLines(al);
-					    System.out.println(al);
+						double cost = graph.totalRouteCost(al);
+						component.distStr = graph.totalRouteDCost(cost);
+						component.timeStr = graph.totalRouteTCost(cost);
 						component.repaint();
-//						component.clear();
 					}else {
 						System.out.print("error message");
 					}
 					
-				} else if (component.time && component.dist) {
+				} else if ((component.time || component.dist) && component.startStrTimeOrDist != "") {
 					// calculate dist
+					component.repaint();
 				} else {
-					// update window with error message 
+					System.out.print("error message for more than one component being selected");
 				}
 				
 			}});
@@ -215,8 +226,6 @@ public class MyViewer {
 		JPanel buttonPanel = new JPanel();
 		//Set up the panel to use a vertical layout and give it a background color
 		buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.PAGE_AXIS));
-		buttonPanel.add(timeButton);
-		buttonPanel.add(distButton);
 		buttonPanel.add(startDropDown);
 		buttonPanel.add(endDropDown);
 		buttonPanel.add(timeDropDown);

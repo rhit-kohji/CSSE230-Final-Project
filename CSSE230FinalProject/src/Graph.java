@@ -89,6 +89,7 @@ public class Graph<String>{
 				}
 				
 				double newMovementCostToNeighbour = current.gCost + neighbour.getCost();
+				
 				if(newMovementCostToNeighbour < neighbour.otherVertex.gCost || !openSet.contains(neighbour.otherVertex)) { //if new path to neighbour is shorter than prev. best path
 					neighbour.otherVertex.gCost = newMovementCostToNeighbour; //assigning current best path
 					neighbour.otherVertex.hCost = this.computeHCost(neighbour.otherVertex.name, to);
@@ -97,7 +98,10 @@ public class Graph<String>{
 //					if(!openSet.contains(neighbour.otherVertex)) { //TODO: may want to change this to always add neighbour to openSet
 //						openSet.add(neighbour.otherVertex);
 //					}
-					openSet.add(neighbour.otherVertex);
+					if (!openSet.contains(neighbour.otherVertex)) {
+						openSet.add(neighbour.otherVertex);
+						
+					}
 				}
 			}  
 		}
@@ -107,7 +111,7 @@ public class Graph<String>{
 	/*
 	 * This is where we put the modified A* algorithm to find route(s) by cost
 	 */
-	public ArrayList<Vertex> findRouteWithMaxCost(String from, double maxCost, boolean isTime) {
+	public ArrayList<Vertex> findRouteWithMaxCost(String from, double maxCost, boolean isTime) { //passing in maxCost as km
 		if (!this.keyToIndex.containsKey(from)) {
 			throw new NoSuchElementException();
 		}
@@ -364,11 +368,9 @@ public class Graph<String>{
 //				return (int)(this.hCost - otherVertex.hCost);
 //			}
 			
-			if ( this.fCost() != otherVertex.fCost() ) {
-				return (int)(this.fCost() - otherVertex.fCost()); 
-			} else {
-				return (int)(this.hCost - otherVertex.hCost); 
-			}
+//			return (int)(this.fCost() - otherVertex.fCost());
+			return (int)(otherVertex.fCost() - this.fCost());
+			
 			
 		}
 		
