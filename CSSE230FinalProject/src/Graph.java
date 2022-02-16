@@ -12,7 +12,6 @@ import java.util.Queue;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-
 // tiny change
 public class Graph<String>{
 	ArrayList<Vertex> vertices;
@@ -23,7 +22,7 @@ public class Graph<String>{
 	
 	//These are our conversion factors for the values in our text file:  
 	double distanceConversionFactor = 5; //1cm = 5km
-	double travelSpeed = 6.44; //walking speed of 6.44km/hr
+	double travelSpeed = 22; //average horse cantor speed of 22km/hr
 	
 	public Graph(ArrayList<String> keys) {
 		numEdges = 0;
@@ -96,13 +95,7 @@ public class Graph<String>{
 					neighbour.otherVertex.hCost = this.computeHCost(neighbour.otherVertex.name, to);
 					neighbour.otherVertex.parent = current;
 					
-//					if(!openSet.contains(neighbour.otherVertex)) { //TODO: may want to change this to always add neighbour to openSet
-//						openSet.add(neighbour.otherVertex);
-//					}
-					if (!openSet.contains(neighbour.otherVertex)) {
-						openSet.add(neighbour.otherVertex);
-						
-					}
+					openSet.add(neighbour.otherVertex);
 				}
 			}  
 		}
@@ -189,6 +182,8 @@ public class Graph<String>{
 	
 	public String totalRouteDCost(double totalRouteCost) {
 		double totalRouteDCost = totalRouteCost * distanceConversionFactor;
+		totalRouteDCost = Math.floor(totalRouteDCost * 100) / 100;
+		
 		return (String) (totalRouteDCost + " km");
 	}
 	
@@ -359,20 +354,11 @@ public class Graph<String>{
 		}
 
 		@Override
-		public int compareTo(Vertex otherVertex) { //TODO: using fCost instead each cost separately
+		public int compareTo(Vertex otherVertex) { //using fCost instead each cost separately
 			//-1 higher priority
 			//0 just equal
 			//1 lower priority
-//			if (this.gCost != otherVertex.gCost) {
-//				return (int)(this.gCost - otherVertex.gCost);
-//			} else {
-//				return (int)(this.hCost - otherVertex.hCost);
-//			}
-			
-//			return (int)(this.fCost() - otherVertex.fCost());
 			return (int)(otherVertex.fCost() - this.fCost());
-			
-			
 		}
 		
 	}

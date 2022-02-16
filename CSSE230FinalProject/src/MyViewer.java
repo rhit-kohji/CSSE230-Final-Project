@@ -159,9 +159,9 @@ public class MyViewer {
 				component.startStr = startDropDown.getSelectedItem().toString();
 			}});
 		
-		String[] endingLocation = {"End","Akh Va'quot", "Bareeda Naag", "Dunba Taag", "Bareeda Naag", "Gee Ha'rah", "Goma Asaagh", "Hia Miu","Kah Okeo", "Katah Chuki", "Lanno Kooh", "Maag No'rah", "Maka Rah",
+		String[] endingLocation = {"End","Akh Va'quot", "Bareeda Naag", "Dunba Taag", "Gee Ha'rah", "Goma Asaagh", "Hia Miu","Kah Okeo", "Katah Chuki", "Lanno Kooh", "Maag No'rah", "Maka Rah",
 				"Mijah Rokee","Mogg Latan", "Monya Toma", "Mozo Shenno", "Noya Neha", "Qaza Toki", "Rin Oyaa","Rok Uwog", "Rona Kachta", "Sha Gemma", "Sha Warvo",
-				"Shada Naw", "Shae Loya", "Sheem Dagoze", "Tena Ko'sah", "Toh Yahsa", "Voo Lota", "Zalta Wa"};
+				"Shada Naw", "Shae Loya", "Sheem Dagoze", "Tena Ko'sah", "To Quomo","Toh Yahsa", "Voo Lota", "Zalta Wa"};
 	    JComboBox<String> endDropDown = new JComboBox<>(endingLocation);
 	    endDropDown.addActionListener(new ActionListener() {
 			@Override
@@ -171,9 +171,9 @@ public class MyViewer {
 				component.endStr = endDropDown.getSelectedItem().toString();
 			}});
 	    
-	    String[] startingLocationTimeOrDist = {"Start","Akh Va'quot", "Bareeda Naag", "Dunba Taag", "Bareeda Naag", "Gee Ha'rah", "Goma Asaagh", "Hia Miu","Kah Okeo", "Katah Chuki", "Lanno Kooh", "Maag No'rah", "Maka Rah",
-	    		"Mijah Rokee","Mogg Latan", "Monya Toma", "Mozo Shenno", "Noya Neha", "Qaza Toki", "Rin Oyaa","Rok Uwog", "Rona Kachta", "Sha Gemma", "Sha Warvo",
-	    		"Shada Naw", "Shae Loya", "Sheem Dagoze", "Tena Ko'sah", "Toh Yahsa", "Voo Lota", "Zalta Wa"};
+	    String[] startingLocationTimeOrDist = {"Start","Akh Va'quot", "Bareeda Naag", "Dunba Taag", "Gee Ha'rah", "Goma Asaagh", "Hia Miu","Kah Okeo", "Katah Chuki", "Lanno Kooh", "Maag No'rah", "Maka Rah",
+				"Mijah Rokee","Mogg Latan", "Monya Toma", "Mozo Shenno", "Noya Neha", "Qaza Toki", "Rin Oyaa","Rok Uwog", "Rona Kachta", "Sha Gemma", "Sha Warvo",
+				"Shada Naw", "Shae Loya", "Sheem Dagoze", "Tena Ko'sah", "To Quomo","Toh Yahsa", "Voo Lota", "Zalta Wa"};
         JComboBox<String> startDropDownTimeOrDist = new JComboBox<>(startingLocationTimeOrDist);
         startDropDownTimeOrDist.addActionListener(new ActionListener() {
 			@Override
