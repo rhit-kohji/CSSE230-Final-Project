@@ -21,6 +21,7 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 
 
+// tiny change
 public class MyComponent extends JComponent {
 	public boolean end = false;
 	public boolean start = false;
