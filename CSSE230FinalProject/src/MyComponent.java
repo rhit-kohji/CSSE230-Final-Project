@@ -5,6 +5,7 @@ import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.geom.Line2D;
 import java.util.ArrayList;
+import java.awt.BasicStroke;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
@@ -28,6 +29,7 @@ public class MyComponent extends JComponent {
 		for (int i = 0; i < al.size() - 1; i++) {
 			pathLines.add(new Line2D.Double(al.get(i).getPosX(), al.get(i).getPosY(), al.get(i + 1).getPosX(), al.get(i + 1).getPosY()));
 		}
+		System.out.println(pathLines.toString());
 	}
 	
 	protected void clear() {
@@ -77,6 +79,8 @@ public class MyComponent extends JComponent {
 		
 		for (int j = 0; j < pathLines.size(); j++) {
 			g2.setColor(Color.RED);
+			g2.setStroke(new BasicStroke(3));
+			g2.draw(pathLines.get(j));
 			g2.fill(pathLines.get(j));
 		}
 

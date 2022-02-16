@@ -98,10 +98,10 @@ public class MyViewer {
 	    }
 	    
 //	    System.out.println(graph.getVertex("Hia Miu").toString());
-	    ArrayList<Graph<String>.Vertex> route = graph.findRoute("Hia Miu", "Katah Chuki");
+//	    ArrayList<Graph<String>.Vertex> route = graph.findRoute("Hia Miu", "To Quomo");
 	    
 //	    ArrayList<Graph<String>.Vertex> route = graph.findRoute("Hia Miu", "Shada Naw");
-	    System.out.println(route);
+
 	    
 //	    for(int i=0; i<graph.vertices.size(); i++) { //Checks for neighbours
 //	    	System.out.println(graph.vertices.get(i).getName());
@@ -178,12 +178,15 @@ public class MyViewer {
 			public void actionPerformed(ActionEvent e) {
 				System.out.println("Entered");
 				if(component.end && component.start) {
-					// calculate dist
 					ArrayList<Graph<String>.Vertex> al = graph.findRoute(component.startStr, component.endStr);
 					if(!al.isEmpty()) {
 						component.addPathLines(al);
+					    System.out.println(al);
+						component.repaint();
+//						component.clear();
+					}else {
+						System.out.print("error message");
 					}
-					System.out.print("error message");
 					
 				} else if (component.time && component.dist) {
 					// calculate dist
@@ -200,6 +203,8 @@ public class MyViewer {
 				component.end = false; 
 				component.dist = false;
 				component.time = false;
+				component.clear();
+				component.repaint();
 				//reset frame 
 				
 			}});
