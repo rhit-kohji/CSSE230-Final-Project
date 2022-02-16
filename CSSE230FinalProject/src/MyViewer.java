@@ -1,4 +1,5 @@
 import java.awt.BorderLayout;
+
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -10,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Queue;
@@ -99,26 +101,27 @@ public class MyViewer {
 	    	graph.vertices.get(i).createNeighbourList();
 	    }
 	    
-//	    System.out.println(graph.getVertex("Hia Miu").toString());
-//	    ArrayList<Graph<String>.Vertex> route = graph.findRoute("Hia Miu", "To Quomo");
-	    
-//	    ArrayList<Graph<String>.Vertex> route = graph.findRoute("Hia Miu", "Shada Naw");
-
-	    
+	    /*
+	     * Test neighbours
+	     */
 //	    for(int i=0; i<graph.vertices.size(); i++) { //Checks for neighbours
-//	    	System.out.println(graph.vertices.get(i).getName());
-//	    	System.out.print("neighbours: ");
-//	    	for(int j=0; j<graph.vertices.get(i).getNeighbours().size(); j++) {
-//	    		System.out.print(graph.vertices.get(i).getNeighbours().get(j).cost + " ");
-//	    	}
-//	    	System.out.println();
+	//    	System.out.println(graph.vertices.get(i).getName());
+	//    	System.out.print("neighbours: ");
+	//    	for(int j=0; j<graph.vertices.get(i).getNeighbours().size(); j++) {
+	//    		System.out.print(graph.vertices.get(i).getNeighbours().get(j).cost + " ");
+	//    	}
+	//    	System.out.println();
+//    	}
+	    
+	    /*
+	     * Test route cases (both findRoute and findRouteWithMaxCost)
+	     */
+//	    ArrayList<Graph<String>.Vertex> route = graph.findRoute("Hia Miu", "To Quomo");
+//	    ArrayList<Graph<String>.Vertex> route = graph.findRoute("Hia Miu", "Shada Naw");
+//	    ArrayList<Graph<String>.State> maxRoutes = graph.findRouteWithMaxCost("Dunba Taag", 5.0, true);
+//	    for(int i=0; i<maxRoutes.size(); i++) {
+//	    	System.out.println(maxRoutes.get(i).getPath());
 //	    }
-	    
-//	    System.out.println();
-//	    System.out.println(Arrays.deepToString(graph.matrix)); //Checks state of matrix
-	    
-//	    System.out.println(graph.hasEdge("Katah Chuki", "Shae Loya")); //Checks hasEdge
-//	    System.out.println(graph.hasEdge("Katah Chuki", "Sheem Dagoze"));
 	
 		JFrame frame = new JFrame();
 
@@ -147,9 +150,9 @@ public class MyViewer {
 				component.time = true;
 			}});
         
-		String[] startingLocation = {"Start","Akh Va'quot", "Bareeda Naag", "Dunba Taag", "Bareeda Naag", "Gee Ha'rah", "Goma Asaagh", "Hia Miu","Kah Okeo", "Katah Chuki", "Lanno Kooh", "Maag No'rah", "Maka Rah",
+		String[] startingLocation = {"Start","Akh Va'quot", "Bareeda Naag", "Dunba Taag", "Gee Ha'rah", "Goma Asaagh", "Hia Miu","Kah Okeo", "Katah Chuki", "Lanno Kooh", "Maag No'rah", "Maka Rah",
 				"Mijah Rokee","Mogg Latan", "Monya Toma", "Mozo Shenno", "Noya Neha", "Qaza Toki", "Rin Oyaa","Rok Uwog", "Rona Kachta", "Sha Gemma", "Sha Warvo",
-				"Shada Naw", "Shae Loya", "Sheem Dagoze", "Tena Ko'sah", "Toh Yahsa", "Voo Lota", "Zalta Wa"};
+				"Shada Naw", "Shae Loya", "Sheem Dagoze", "Tena Ko'sah", "To Quomo","Toh Yahsa", "Voo Lota", "Zalta Wa"};
         JComboBox<String> startDropDown = new JComboBox<>(startingLocation);
         startDropDown.addActionListener(new ActionListener() {
 			@Override

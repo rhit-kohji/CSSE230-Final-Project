@@ -63,13 +63,14 @@ public class MyComponent extends JComponent {
 //			e.printStackTrace();
 //		}
 		
-		InputStream stream = ClassLoader.getSystemClassLoader().getResourceAsStream("EnchantedLand-jnX9.ttf");
-		try {
-			fancyFont = Font.createFont(Font.TRUETYPE_FONT, stream).deriveFont(48f);
-		} catch (FontFormatException | IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		//TODO: uncomment this later
+//		InputStream stream = ClassLoader.getSystemClassLoader().getResourceAsStream("EnchantedLand-jnX9.ttf");
+//		try {
+//			fancyFont = Font.createFont(Font.TRUETYPE_FONT, stream).deriveFont(48f);
+//		} catch (FontFormatException | IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 	
 //		for (int i = 0; i < 829; i++) {
 //			for (int q = 0; q < 808; q++) {

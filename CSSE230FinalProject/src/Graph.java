@@ -13,7 +13,6 @@ import java.util.Queue;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-// tiny change
 public class Graph<String>{
 	ArrayList<Vertex> vertices;
 	Map<String, Integer> keyToIndex;
@@ -44,7 +43,6 @@ public class Graph<String>{
 	/*
 	 * Helper methods for A* algorithm and Graph
 	 */
-	//TODO: check this, Reset function for our findRoute
 	public void reset() {
 		for(int i=0; i<this.vertices.size(); i++) {
 			this.vertices.get(i).gCost = Double.MAX_VALUE;
@@ -104,24 +102,29 @@ public class Graph<String>{
 	}
 	
 	/*
-	 * This is wrapper class for the modified A* algorithm to find route(s) by cost
+	 * This is wrapper class for the modified A* algorithm to find route(s) by cost.
+	 * Each state holds a path that can be travelled under the max cost.
 	 */
 	public class State {
 		private Vertex current;
-		private LinkedList<Vertex> path;
+		private ArrayList<Vertex> path;
 		private double maxCost;
 		
 		public State(State current, Vertex newVertex, double cost) {
 			this.current = newVertex;
-			this.path = (LinkedList<Graph<String>.Vertex>) current.path.clone();
+			this.path = (ArrayList<Graph<String>.Vertex>) current.path.clone();
 			this.path.add(newVertex);
 			this.maxCost = current.maxCost + cost;
 		}
 		
 		public State(Vertex current) {
 			this.current = current;
-			this.path = new LinkedList<Vertex>();
+			this.path = new ArrayList<Vertex>();
 			this.maxCost = 0.0;
+		}
+		
+		public ArrayList<Vertex> getPath() {
+			return this.path;
 		}
 	}
 	
@@ -129,24 +132,26 @@ public class Graph<String>{
 	/*
 	 * This is where we put the modified A* algorithm to find route(s) by cost
 	 */
-	public ArrayList<LinkedList<Vertex>> findRouteWithMaxCost(String from, double maxCost, boolean isTime) { //passing in maxCost as km or hours
+	public ArrayList<State> findRouteWithMaxCost(String from, double maxCost, boolean isTime) { //passing in maxCost as km or hours
 		if (!this.keyToIndex.containsKey(from)) {
 			throw new NoSuchElementException();
 		}
 		this.reset();
 		
 		if (isTime) {
-			maxCost = maxCost * ((travelSpeed) / (60 * distanceConversionFactor));
+			maxCost = (maxCost * travelSpeed) / distanceConversionFactor;
 		}
 		else {
 			maxCost = (maxCost / distanceConversionFactor);
 		}
 		maxCost = maxCost/2; // halved because we want to travel to and fro
 		
-		LinkedList<State> paths = new LinkedList<>();	// return this, pick out paths of each state somewhere (maybe another method)
+		ArrayList<State> paths = new ArrayList<>();	// return this, pick out paths of each state in MyViewer
 		
 		Vertex start = this.getVertex(from);
-		paths.add(new State(start)); //head of linkedlist
+		start.gCost = 0;
+		
+		paths.add(new State(start)); //start of arraylist
 		
 		int index = 0;
 		
@@ -155,30 +160,25 @@ public class Graph<String>{
 			State current = paths.get(index++);
 			
 			for(Edge neighbour : current.current.getNeighbours()) {
-				// make sure that the neighbor is not already in the current path
+				// make sure neighbour is not already in the current path
 				// if it is not and if cost to get to the new neighbor is less than the specified cost, create a new state and add it to paths
 				// current + cost to get neighbor
-				// eventually, return the linkedList of paths
-				// 
-				if( closedSet.contains(neighbour.otherVertex) ) { //vertex already evaluated
+				// eventually, return the arraylist of paths
+				if (current.path.contains(neighbour.otherVertex)) { //make sure that the neighbor is not already in the current path
 					continue; //skip to next neighbour
 				}
 				
-				double newMovementCostToNeighbour = current.gCost + neighbour.getCost();
-				if(newMovementCostToNeighbour < maxCost) { 
+				double newMovementCostToNeighbour = current.current.gCost + neighbour.getCost();
+				if( newMovementCostToNeighbour <= maxCost && !neighbour.otherVertex.equals(start) ) { //neighbour should not travel back to start 
+					State newState = new State( current, neighbour.otherVertex, neighbour.getCost() );
+					paths.add(newState);
 					neighbour.otherVertex.gCost = newMovementCostToNeighbour; //assigning current best path
-//					neighbour.otherVertex.hCost = this.computeHCost(neighbour.otherVertex.name, to);
-					neighbour.otherVertex.parent = current;
-					
-					if(!openSet.contains(neighbour.otherVertex)) {
-						openSet.add(neighbour.otherVertex);
-					}
 				}
 			}
 		}
-		return null;
+		return paths;
 	}
-	
+
 	public ArrayList<Vertex> backTrace(Vertex start, Vertex end) {
 		ArrayList<Vertex> path = new ArrayList<>();
 		Vertex current = end;
@@ -211,11 +211,9 @@ public class Graph<String>{
 	}
 	
 	public String totalRouteTCost(double totalRouteCost) {
-//		double totalMinutes = ( (totalRouteCost * distanceConversionFactor) / travelSpeed ) * 60; // route in minutes
 		double hours = ( (totalRouteCost * distanceConversionFactor) / travelSpeed );
 		int finalHours = (int) hours;
 		int minutes = (int) (hours * 60) % 60;
-//		return (String) ("Total Minutes: " + totalMinutes + " Hours: " + finalHours + " Minutes: " + minutes);
 		return (String) ("Hours: " + finalHours + " Minutes: " + minutes);
 	}
 	
@@ -281,8 +279,7 @@ public class Graph<String>{
 	public double computeHCost(String from, String to) {
 		Vertex fromVertex = this.getVertex(from);
 		Vertex toVertex = this.getVertex(to);
-		double hCost = Math.sqrt(Math.pow((toVertex.posX - fromVertex.posX), 2) + Math.pow((toVertex.posY - fromVertex.posY), 2));
-//		double hCost = Math.abs(toVertex.posX - fromVertex.posX) + Math.abs(toVertex.posY - fromVertex.posY); //TODO: Another heuristic we could use 
+		double hCost = Math.sqrt(Math.pow((toVertex.posX - fromVertex.posX), 2) + Math.pow((toVertex.posY - fromVertex.posY), 2)); 
 		return hCost;
 	}
 	
