@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -103,9 +104,32 @@ public class Graph<String>{
 	}
 	
 	/*
+	 * This is wrapper class for the modified A* algorithm to find route(s) by cost
+	 */
+	public class State {
+		private Vertex current;
+		private LinkedList<Vertex> path;
+		private double maxCost;
+		
+		public State(State current, Vertex newVertex, double cost) {
+			this.current = newVertex;
+			this.path = (LinkedList<Graph<String>.Vertex>) current.path.clone();
+			this.path.add(newVertex);
+			this.maxCost = current.maxCost + cost;
+		}
+		
+		public State(Vertex current) {
+			this.current = current;
+			this.path = new LinkedList<Vertex>();
+			this.maxCost = 0.0;
+		}
+	}
+	
+	
+	/*
 	 * This is where we put the modified A* algorithm to find route(s) by cost
 	 */
-	public ArrayList<Vertex> findRouteWithMaxCost(String from, double maxCost, boolean isTime) { //passing in maxCost as km
+	public ArrayList<LinkedList<Vertex>> findRouteWithMaxCost(String from, double maxCost, boolean isTime) { //passing in maxCost as km or hours
 		if (!this.keyToIndex.containsKey(from)) {
 			throw new NoSuchElementException();
 		}
@@ -117,26 +141,25 @@ public class Graph<String>{
 		else {
 			maxCost = (maxCost / distanceConversionFactor);
 		}
+		maxCost = maxCost/2; // halved because we want to travel to and fro
 		
-		Queue<Vertex> openSet = new PriorityQueue<>(); //vertices to be evaluated, it needs to store edges
-		Set<Vertex> closedSet = new HashSet<>(); //vertices that have been evaluated
+		LinkedList<State> paths = new LinkedList<>();	// return this, pick out paths of each state somewhere (maybe another method)
 		
 		Vertex start = this.getVertex(from);
-		openSet.add(start);
+		paths.add(new State(start)); //head of linkedlist
 		
-		while( !openSet.isEmpty() ) {
+		int index = 0;
+		
+		while(index < paths.size()) {
 			
-			Vertex current = openSet.poll();
-			if (closedSet.contains(current)) {
-				continue;
-			}
+			State current = paths.get(index++);
 			
-			closedSet.add(current);
-//			if (current.name.equals(to)) {
-//				return this.backTrace(start, target);
-//			}
-			
-			for(Edge neighbour : current.getNeighbours()) {
+			for(Edge neighbour : current.current.getNeighbours()) {
+				// make sure that the neighbor is not already in the current path
+				// if it is not and if cost to get to the new neighbor is less than the specified cost, create a new state and add it to paths
+				// current + cost to get neighbor
+				// eventually, return the linkedList of paths
+				// 
 				if( closedSet.contains(neighbour.otherVertex) ) { //vertex already evaluated
 					continue; //skip to next neighbour
 				}
