@@ -1,6 +1,8 @@
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -24,6 +26,12 @@ import javax.swing.JRadioButton;
 
 public class MyViewer {
 	static Dimension SCENE_VIEWER = new Dimension(1100, 630);
+	private boolean end = false;
+	private boolean start = false;
+	private boolean time = false; 
+	private boolean dist = false;
+	private String startStr = ""; 
+	private String endStr = ""; 
 	public static void main(String[] args) {
 	    Graph<String> graph;
 
@@ -127,23 +135,74 @@ public class MyViewer {
         JRadioButton timeButton = new JRadioButton("Distance");
 		String[] distLocation = {"Distance in KM","5", "10", "20", "30", "40", "50"};
         JComboBox<String> distDropDown = new JComboBox<>(distLocation);
+        distDropDown.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				System.out.println("Distance Added");
+				dist = true;
+			}});
     
 		JRadioButton distButton = new JRadioButton("Time");
 		String[] timeLocation = {"Time","1 hour","2 hour","3 hour","4 hour","5 hour",};
         JComboBox<String> timeDropDown = new JComboBox<>(timeLocation);
+        timeDropDown.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				System.out.println("Time Added");
+				time = true;
+			}});
         
 		String[] startingLocation = {"Start","Katah Chuki", "Noya Neha", "Akh Va'quot", "Bareeda Naag", "Sha Warvo", "Tena Ko'sah","Voo Lota", "Maag No'rah", "Mijah Rokee", "Mogg Latan", "Shae Loya", 
 				"Sheem Dagoze","Toh Yahsa", "Zalta Wa", "Monya Toma", "Rona Kachta", "Dunba Taag", "Gee Ha'rah","Goma Asaagh", "Hia Miu", "Lanno Kooh", "Maka Rah",
 				"Mozo Shenno", "Qaza Toki", "Rin Oyaa", "Rok Uwog", "Sha Gemma", "Shada Naw", "To Quomo"};
-        JComboBox<String> startDropDown = new JComboBox<>(startingLocation); 
+        JComboBox<String> startDropDown = new JComboBox<>(startingLocation);
+        startDropDown.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				System.out.println("First Location");
+				start = true;
+				startStr = startDropDown.getSelectedItem().toString();
+			}});
 		
 		String[] endingLocation = {"End","Katah Chuki", "Noya Neha", "Akh Va'quot", "Bareeda Naag", "Sha Warvo", "Tena Ko'sah","Voo Lota", "Maag No'rah", "Mijah Rokee", "Mogg Latan", "Shae Loya", 
 				"Sheem Dagoze","Toh Yahsa", "Zalta Wa", "Monya Toma", "Rona Kachta", "Dunba Taag", "Gee Ha'rah","Goma Asaagh", "Hia Miu", "Lanno Kooh", "Maka Rah",
 				"Mozo Shenno", "Qaza Toki", "Rin Oyaa", "Rok Uwog", "Sha Gemma", "Shada Naw", "To Quomo"};
 	    JComboBox<String> endDropDown = new JComboBox<>(endingLocation);
+	    endDropDown.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				System.out.println("End Added");
+				MyViewer.this.end = true;
+				MyViewer.this.endStr = endDropDown.getSelectedItem().toString();
+			}});
 	    
 	    JButton enter =new JButton("Enter");
 	    
+	    enter.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				System.out.println("Entered");
+				if(MyViewer.this.end && MyViewer.this.start) {
+					// calculate dist
+					graph.findRoute(MyViewer.this.startStr, MyViewer.this.endStr);
+				} else if (MyViewer.this.time && MyViewer.this.dist) {
+					// calculate dist
+				} else {
+					// update window with error message 
+				}
+				
+			}});
+	    JButton restart =new JButton("Restart");
+	    restart.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				MyViewer.this.start = false;
+				MyViewer.this.end = false; 
+				MyViewer.this.dist = false;
+				MyViewer.this.time = false;
+				//reset frame 
+				
+			}});
 	    MyComponent component = new MyComponent();
 	    frame.add(component,BorderLayout.CENTER);
 	    
@@ -159,6 +218,7 @@ public class MyViewer {
 		buttonPanel.add(timeDropDown);
 		buttonPanel.add(distDropDown);
 		buttonPanel.add(enter);
+		buttonPanel.add(restart);
 			
 		frame.add(buttonPanel,BorderLayout.EAST);
 		
