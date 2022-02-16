@@ -3,6 +3,8 @@ import java.awt.Graphics2D;
 import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.Toolkit;
+import java.awt.geom.Line2D;
+import java.util.ArrayList;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
@@ -12,8 +14,20 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 
-public class MyComponent extends JComponent {
 
+public class MyComponent extends JComponent {
+	private ArrayList<Line2D.Double> pathLines = new ArrayList<Line2D.Double>();
+	
+	protected void addPathLines(ArrayList<Graph.Vertex> vertices) {
+		for (int i = 0; i < vertices.size() - 1; i++) {
+			pathLines.add(new Line2D.Double(vertices.get(i).getPosX(), vertices.get(i).getPosY(), vertices.get(i + 1).getPosX(), vertices.get(i + 1).getPosY()));
+		}
+	}
+	
+	protected void clear() {
+		pathLines.clear();
+	}
+	
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		Graphics2D g2 = (Graphics2D) g;
@@ -48,6 +62,11 @@ public class MyComponent extends JComponent {
 		Toolkit t = Toolkit.getDefaultToolkit();
 		Image i = t.getImage("MapFor230WithCorrectSize.png");
 		g.drawImage(i, 0, 0, this);
+		
+		for (int j = 0; j < pathLines.size(); j++) {
+			g2.setColor(Color.RED);
+			g2.fill(pathLines.get(j));
+		}
 
 	}
 }
