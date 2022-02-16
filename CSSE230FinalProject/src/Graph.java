@@ -127,14 +127,14 @@ public class Graph<String>{
 	
 	public String totalRouteDCost(double totalRouteCost) {
 		double totalRouteDCost = totalRouteCost * distanceConversionFactor;
-		return totalRouteDCost + "";
+		return (String) (totalRouteDCost + "");
 	}
 	
-	public double totalRouteTCost(double totalRouteCost) {
+	public String totalRouteTCost(double totalRouteCost) {
 //		double minutes = ( (totalRouteCost * distanceConversionFactor) / travelSpeed ) * 60; // route in minutes
 		double hours = ( (totalRouteCost * distanceConversionFactor) / travelSpeed );
 		double minutes = hours % 60;
-		return 
+		return (String) ("Hours: " + hours + " Minutes: " + minutes);
 	}
 	
 	public int size() {
