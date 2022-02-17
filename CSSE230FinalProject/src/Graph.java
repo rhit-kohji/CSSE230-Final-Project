@@ -77,7 +77,6 @@ public class Graph<String>{
 			
 			closedSet.add(current);
 			if (current.name.equals(to)) {
-				System.out.println("Ich bin heir");
 				return this.backTrace(start, target);
 			}
 			
@@ -99,8 +98,7 @@ public class Graph<String>{
 				}
 			}  
 		}
-//		return null;
-		return vertices;
+		return null;
 	}
 	
 	/*
