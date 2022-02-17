@@ -77,6 +77,7 @@ public class Graph<String>{
 			
 			closedSet.add(current);
 			if (current.name.equals(to)) {
+				System.out.println("Ich bin heir");
 				return this.backTrace(start, target);
 			}
 			
@@ -98,7 +99,8 @@ public class Graph<String>{
 				}
 			}  
 		}
-		return null;
+//		return null;
+		return vertices;
 	}
 	
 	/*
@@ -134,51 +136,52 @@ public class Graph<String>{
 	 * This is where we put the modified A* algorithm to find route(s) by cost
 	 */
 	public ArrayList<State> findRouteWithMaxCost(String from, double maxCost, boolean isTime) { //passing in maxCost as km or hours
-		if (!this.keyToIndex.containsKey(from)) {
-			throw new NoSuchElementException();
-		}
-		this.reset();
-		
-		if (isTime) {
-			maxCost = (maxCost * travelSpeed) / distanceConversionFactor;
-		}
-		else {
-			maxCost = (maxCost / distanceConversionFactor);
-		}
-		maxCost = maxCost/2; // halved because we want to travel to and fro
-		
-		ArrayList<State> paths = new ArrayList<>();	// return this, pick out paths of each state in MyViewer
-		
-		Vertex start = this.getVertex(from);
-		start.gCost = 0;
-		
-		paths.add(new State(start)); //start of arraylist
-		
-		int index = 0;
-		
-		while(index < paths.size()) {
+			if (!this.keyToIndex.containsKey(from)) {
+				throw new NoSuchElementException();
+			}
+			this.reset();
 			
-			State current = paths.get(index++);
+			if (isTime) {
+				maxCost = (maxCost * travelSpeed) / distanceConversionFactor;
+			}
+			else {
+				maxCost = (maxCost / distanceConversionFactor);
+			}
+			maxCost = maxCost/2; // halved because we want to travel to and fro
 			
-			for(Edge neighbour : current.current.getNeighbours()) {
-				// make sure neighbour is not already in the current path
-				// if it is not and if cost to get to the new neighbor is less than the specified cost, create a new state and add it to paths
-				// current + cost to get neighbor
-				// eventually, return the arraylist of paths
-				if (current.path.contains(neighbour.otherVertex)) { //make sure that the neighbor is not already in the current path
-					continue; //skip to next neighbour
-				}
+			ArrayList<State> paths = new ArrayList<>();	// return this, pick out paths of each state in MyViewer
+			
+			Vertex start = this.getVertex(from);
+			start.gCost = 0;
+			
+			paths.add(new State(start)); //start of arraylist
+			
+			int index = 0;
+			
+			while(index < paths.size()) {
 				
-				double newMovementCostToNeighbour = current.current.gCost + neighbour.getCost();
-				if( newMovementCostToNeighbour <= maxCost && !neighbour.otherVertex.equals(start) ) { //neighbour should not travel back to start 
-					State newState = new State( current, neighbour.otherVertex, neighbour.getCost() );
-					paths.add(newState);
-					neighbour.otherVertex.gCost = newMovementCostToNeighbour; //assigning current best path
+				State current = paths.get(index++);
+				
+				for(Edge neighbour : current.current.getNeighbours()) {
+					// make sure neighbour is not already in the current path
+					// if it is not and if cost to get to the new neighbor is less than the specified cost, create a new state and add it to paths
+					// current + cost to get neighbor
+					// eventually, return the arraylist of paths
+					if (current.path.contains(neighbour.otherVertex)) { //make sure that the neighbor is not already in the current path
+						continue; //skip to next neighbour
+					}
+					
+					double newMovementCostToNeighbour = current.current.gCost + neighbour.getCost();
+					if( newMovementCostToNeighbour <= maxCost && !neighbour.otherVertex.equals(start) ) { //neighbour should not travel back to start 
+						State newState = new State( current, neighbour.otherVertex, neighbour.getCost() );
+						paths.add(newState);
+						neighbour.otherVertex.gCost = newMovementCostToNeighbour; //assigning current best path
+					}
 				}
 			}
+			return paths;
 		}
-		return paths;
-	}
+	
 
 	public ArrayList<Vertex> backTrace(Vertex start, Vertex end) {
 		ArrayList<Vertex> path = new ArrayList<>();

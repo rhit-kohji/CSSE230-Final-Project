@@ -32,6 +32,8 @@ public class MyComponent extends JComponent {
 	public ArrayList<Line2D.Double> pathLines = new ArrayList<Line2D.Double>();
 	public String distStr = "";
 	public String timeStr = "";
+	public String distOnlyStr = "";
+	public String timeOnlyStr = "";
 	public String startStrTimeOrDist = "";
 	public Font fancyFont;
 	
