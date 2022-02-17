@@ -118,10 +118,10 @@ public class MyViewer {
 	     */
 //	    ArrayList<Graph<String>.Vertex> route = graph.findRoute("Hia Miu", "To Quomo");
 //	    ArrayList<Graph<String>.Vertex> route = graph.findRoute("Hia Miu", "Shada Naw");
-//	    ArrayList<Graph<String>.State> maxRoutes = graph.findRouteWithMaxCost("Dunba Taag", 5.0, true);
-//	    for(int i=0; i<maxRoutes.size(); i++) {
-//	    	System.out.println(maxRoutes.get(i).getPath());
-//	    }
+	    ArrayList<Graph<String>.State> maxRoutes = graph.findRouteWithMaxCost("Tena Ko'sah", 150.0, false);
+	    for(int i=0; i<maxRoutes.size(); i++) {
+	    	System.out.println(maxRoutes.get(i).getPath());
+	    }
 	
 		JFrame frame = new JFrame();
 

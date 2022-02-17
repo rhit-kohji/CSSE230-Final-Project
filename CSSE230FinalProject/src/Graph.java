@@ -120,6 +120,7 @@ public class Graph<String>{
 		public State(Vertex current) {
 			this.current = current;
 			this.path = new ArrayList<Vertex>();
+			this.path.add(current);
 			this.maxCost = 0.0;
 		}
 		
