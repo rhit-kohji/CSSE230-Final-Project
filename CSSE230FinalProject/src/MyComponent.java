@@ -80,6 +80,34 @@ public class MyComponent extends JComponent {
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		Graphics2D g2 = (Graphics2D) g;
+<<<<<<< HEAD
+=======
+//		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+//		try {
+//			ge.registerFont(Font.createFont(Font.TRUETYPE_FONT, new File("EnchantedLand-jnX9.ttf")));
+//		} catch (FontFormatException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+		
+		//TODO: uncomment this later
+//		InputStream stream = ClassLoader.getSystemClassLoader().getResourceAsStream("EnchantedLand-jnX9.ttf");
+//		try {
+//			fancyFont = Font.createFont(Font.TRUETYPE_FONT, stream).deriveFont(48f);
+//		} catch (FontFormatException | IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+	
+//		for (int i = 0; i < 829; i++) {
+//			for (int q = 0; q < 808; q++) {
+//				g2.drawRect(i * 1, q * 1, 1, 1);
+//			}
+//		}
+>>>>>>> eddca00fe1f3ae3383ace011395c20d340efd15d
 		Color zeldaBlue = new Color(52, 198, 235);
 		Color grey = new Color(212, 212, 212);
 		Color darkGrey = new Color(133, 133, 133);

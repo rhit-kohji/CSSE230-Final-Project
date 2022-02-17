@@ -13,7 +13,11 @@ import java.util.Queue;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+<<<<<<< HEAD
 public class Graph<String> {
+=======
+public class Graph<String>{
+>>>>>>> eddca00fe1f3ae3383ace011395c20d340efd15d
 	ArrayList<Vertex> vertices;
 	Map<String, Integer> keyToIndex;
 	List<String> indexToKey;
@@ -126,7 +130,11 @@ public class Graph<String> {
 			this.path = new ArrayList<Vertex>();
 			this.maxCost = 0.0;
 		}
+<<<<<<< HEAD
 
+=======
+		
+>>>>>>> eddca00fe1f3ae3383ace011395c20d340efd15d
 		public ArrayList<Vertex> getPath() {
 			return this.path;
 		}
@@ -135,8 +143,12 @@ public class Graph<String> {
 	/*
 	 * This is where we put the modified A* algorithm to find route(s) by cost
 	 */
+<<<<<<< HEAD
 	public ArrayList<State> findRouteWithMaxCost(String from, double maxCost, boolean isTime) { // passing in maxCost as
 																								// km or hours
+=======
+	public ArrayList<State> findRouteWithMaxCost(String from, double maxCost, boolean isTime) { //passing in maxCost as km or hours
+>>>>>>> eddca00fe1f3ae3383ace011395c20d340efd15d
 		if (!this.keyToIndex.containsKey(from)) {
 			throw new NoSuchElementException();
 		}
@@ -144,6 +156,7 @@ public class Graph<String> {
 
 		if (isTime) {
 			maxCost = (maxCost * travelSpeed) / distanceConversionFactor;
+<<<<<<< HEAD
 		} else {
 			maxCost = (maxCost / distanceConversionFactor);
 		}
@@ -156,11 +169,27 @@ public class Graph<String> {
 
 		paths.add(new State(start)); // start of arraylist
 
+=======
+		}
+		else {
+			maxCost = (maxCost / distanceConversionFactor);
+		}
+		maxCost = maxCost/2; // halved because we want to travel to and fro
+		
+		ArrayList<State> paths = new ArrayList<>();	// return this, pick out paths of each state in MyViewer
+		
+		Vertex start = this.getVertex(from);
+		start.gCost = 0;
+		
+		paths.add(new State(start)); //start of arraylist
+		
+>>>>>>> eddca00fe1f3ae3383ace011395c20d340efd15d
 		int index = 0;
 
 		while (index < paths.size()) {
 
 			State current = paths.get(index++);
+<<<<<<< HEAD
 
 			for (Edge neighbour : current.current.getNeighbours()) {
 				// make sure neighbour is not already in the current path
@@ -180,6 +209,23 @@ public class Graph<String> {
 					State newState = new State(current, neighbour.otherVertex, neighbour.getCost());
 					paths.add(newState);
 					neighbour.otherVertex.gCost = newMovementCostToNeighbour; // assigning current best path
+=======
+			
+			for(Edge neighbour : current.current.getNeighbours()) {
+				// make sure neighbour is not already in the current path
+				// if it is not and if cost to get to the new neighbor is less than the specified cost, create a new state and add it to paths
+				// current + cost to get neighbor
+				// eventually, return the arraylist of paths
+				if (current.path.contains(neighbour.otherVertex)) { //make sure that the neighbor is not already in the current path
+					continue; //skip to next neighbour
+				}
+				
+				double newMovementCostToNeighbour = current.current.gCost + neighbour.getCost();
+				if( newMovementCostToNeighbour <= maxCost && !neighbour.otherVertex.equals(start) ) { //neighbour should not travel back to start 
+					State newState = new State( current, neighbour.otherVertex, neighbour.getCost() );
+					paths.add(newState);
+					neighbour.otherVertex.gCost = newMovementCostToNeighbour; //assigning current best path
+>>>>>>> eddca00fe1f3ae3383ace011395c20d340efd15d
 				}
 			}
 		}
@@ -218,7 +264,11 @@ public class Graph<String> {
 	}
 
 	public String totalRouteTCost(double totalRouteCost) {
+<<<<<<< HEAD
 		double hours = ((totalRouteCost * distanceConversionFactor) / travelSpeed);
+=======
+		double hours = ( (totalRouteCost * distanceConversionFactor) / travelSpeed );
+>>>>>>> eddca00fe1f3ae3383ace011395c20d340efd15d
 		int finalHours = (int) hours;
 		int minutes = (int) (hours * 60) % 60;
 		return (String) ("Hours: " + finalHours + " Minutes: " + minutes);
@@ -287,8 +337,12 @@ public class Graph<String> {
 	public double computeHCost(String from, String to) {
 		Vertex fromVertex = this.getVertex(from);
 		Vertex toVertex = this.getVertex(to);
+<<<<<<< HEAD
 		double hCost = Math
 				.sqrt(Math.pow((toVertex.posX - fromVertex.posX), 2) + Math.pow((toVertex.posY - fromVertex.posY), 2));
+=======
+		double hCost = Math.sqrt(Math.pow((toVertex.posX - fromVertex.posX), 2) + Math.pow((toVertex.posY - fromVertex.posY), 2)); 
+>>>>>>> eddca00fe1f3ae3383ace011395c20d340efd15d
 		return hCost;
 	}
 
