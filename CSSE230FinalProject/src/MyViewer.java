@@ -1,13 +1,13 @@
 import java.awt.BorderLayout;
 
 import java.awt.Dimension;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
-<<<<<<< HEAD
-=======
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
@@ -15,21 +15,21 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Queue;
->>>>>>> eddca00fe1f3ae3383ace011395c20d340efd15d
 import java.util.Scanner;
-
+import java.util.Set;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 
 
 // tiny change
 public class MyViewer {
-	static Dimension SCENE_VIEWER = new Dimension(1190, 630);
-	
+	static Dimension SCENE_VIEWER = new Dimension(1100, 630);
 	public static void main(String[] args) {
 	    Graph<String> graph;
 	    MyComponent component = new MyComponent();
@@ -132,24 +132,21 @@ public class MyViewer {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setVisible(true);
       
-       	String[] distLocation = {"Distance in KM","None", "5", "10", "20", "30", "40", "50","100","150","200"};
+       	String[] distLocation = {"Distance in KM","5", "10", "20", "30", "40", "50","100","150","200"};
         JComboBox<String> distDropDown = new JComboBox<>(distLocation);
         distDropDown.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				System.out.println("Distance Added");
-				component.distStrDropBox = distDropDown.getSelectedItem().toString();
-				System.out.println(component.distStrDropBox);
 				component.dist = true;
 			}});
     
-		String[] timeLocation = {"Time in Hours","None", "1","2","3","4","5",};
+		String[] timeLocation = {"Time in Hours","1","2","3","4","5",};
         JComboBox<String> timeDropDown = new JComboBox<>(timeLocation);
         timeDropDown.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				System.out.println("Time Added");
-				component.timeStrDropBox = timeDropDown.getSelectedItem().toString();
 				component.time = true;
 			}});
         
@@ -177,10 +174,10 @@ public class MyViewer {
 				component.endStr = endDropDown.getSelectedItem().toString();
 			}});
 	    
-	    String[] startLocationTimeOrDist = {"Starting Location For Time/Dist","Akh Va'quot", "Bareeda Naag", "Dunba Taag", "Gee Ha'rah", "Goma Asaagh", "Hia Miu","Kah Okeo", "Katah Chuki", "Lanno Kooh", "Maag No'rah", "Maka Rah",
+	    String[] startingLocationTimeOrDist = {"Start","Akh Va'quot", "Bareeda Naag", "Dunba Taag", "Gee Ha'rah", "Goma Asaagh", "Hia Miu","Kah Okeo", "Katah Chuki", "Lanno Kooh", "Maag No'rah", "Maka Rah",
 				"Mijah Rokee","Mogg Latan", "Monya Toma", "Mozo Shenno", "Noya Neha", "Qaza Toki", "Rin Oyaa","Rok Uwog", "Rona Kachta", "Sha Gemma", "Sha Warvo",
 				"Shada Naw", "Shae Loya", "Sheem Dagoze", "Tena Ko'sah", "To Quomo","Toh Yahsa", "Voo Lota", "Zalta Wa"};
-        JComboBox<String> startDropDownTimeOrDist = new JComboBox<>(startLocationTimeOrDist);
+        JComboBox<String> startDropDownTimeOrDist = new JComboBox<>(startingLocationTimeOrDist);
         startDropDownTimeOrDist.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -193,8 +190,6 @@ public class MyViewer {
 	    enter.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				double maxCost;
-				boolean isTime;
 				System.out.println("Entered");
 				if(component.end && component.start) {
 					ArrayList<Graph<String>.Vertex> al = graph.findRoute(component.startStr, component.endStr);
@@ -208,24 +203,12 @@ public class MyViewer {
 						System.out.print("error message");
 					}
 					
-				}if ((component.distStrDropBox != "None" || component.timeStrDropBox!= "None") && component.startStrTimeOrDist != "") {
-					System.out.println("found");
-					if(component.distStrDropBox != "None" && component.timeStrDropBox== "None") {
-						 maxCost = Double.parseDouble(component.distStrDropBox);
-						 isTime = false;
-						 System.out.println("found 2");
-					}else {
-						maxCost = Double.parseDouble(component.timeStrDropBox);
-						isTime = true;
-					}
-					ArrayList<Graph<String>.State> al = graph.findRouteWithMaxCost(component.startStrTimeOrDist, maxCost, isTime);
-					for(int i = 0; i < al.size(); i++) {
-							component.addPathLines(al.get(i).getPath());
-						}
-					System.out.println("found 3");
+				} else if ((component.time || component.dist) && component.startStrTimeOrDist != "") {
+					// calculate dist
 					component.repaint();
-				} 
-
+				} else {
+					System.out.print("error message for more than one component being selected");
+				}
 				
 			}});
 	    JButton restart =new JButton("Restart");
@@ -241,7 +224,6 @@ public class MyViewer {
 				//reset frame 
 				
 			}});
-
 	    frame.add(component,BorderLayout.CENTER);
 	    
 	    frame.getContentPane().addMouseListener(new mouseClickListener());
@@ -251,7 +233,6 @@ public class MyViewer {
 		buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.PAGE_AXIS));
 		buttonPanel.add(startDropDown);
 		buttonPanel.add(endDropDown);
-		buttonPanel.add(startDropDownTimeOrDist);
 		buttonPanel.add(timeDropDown);
 		buttonPanel.add(distDropDown);
 		buttonPanel.add(enter);
